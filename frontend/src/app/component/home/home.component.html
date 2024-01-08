@@ -8,7 +8,7 @@
         <div>
           <input type="text" class="form-control mb-3" placeholder="Title" formControlName="title">
           <select class="form-control mb-3" formControlName="artist">
-            <option>Select Artist</option>
+            <option value="{{null}}">Select Artist</option>
             <option *ngFor="let artist of artists">{{artist}}</option>
           </select>
           <input type="text" class="form-control mb-3" placeholder="Selling Gallery" formControlName="gallery">
