@@ -1,41 +1,40 @@
 <div>
   <h1 class="display-4">Artwork Authenticator</h1>
 
-  <div class="input-area row d-flex col-10 offset-1">
-
-    <!-- INPUT -->
-    <div class="col-6 d-flex flex-column justify-content-between" #inputFieldsContainer>
-      <div>
-        <input type="text" class="form-control mb-3" placeholder="Title">
-        <select class="form-control mb-3">
-          <option>Select Artist</option>
-          <option *ngFor="let artist of artists">{{artist}}</option>
-        </select>
-        <input type="text" class="form-control mb-3" placeholder="Selling Gallery">
-        <input type="text" class="form-control mb-3" placeholder="Price">
-        <textarea class="form-control mb-3" placeholder="Description and Other Information"></textarea>
-        <div class="custom-file-upload mb-3">
-          <div class="row">
-            <div class="col-3">
-              <input id="fileUpload" type="file" class="form-control mb-3" accept="image/*" (change)="onFileSelect($event)" hidden>
-              <label for="fileUpload" class="btn-upload btn-primary btn w-100">Choose File</label>
+  <form [formGroup]="artworkForm" (ngSubmit)="onSubmit()">
+    <div class="input-area row d-flex col-10 offset-1">
+      <!-- INPUT -->
+      <div class="col-6 d-flex flex-column justify-content-between">
+        <div>
+          <input type="text" class="form-control mb-3" placeholder="Title" formControlName="title">
+          <select class="form-control mb-3" formControlName="artist">
+            <option>Select Artist</option>
+            <option *ngFor="let artist of artists">{{artist}}</option>
+          </select>
+          <input type="text" class="form-control mb-3" placeholder="Selling Gallery" formControlName="gallery">
+          <input type="text" class="form-control mb-3" placeholder="Price" formControlName="price">
+          <textarea class="form-control mb-3" placeholder="Description and Other Information" formControlName="description"></textarea>
+          <div class="custom-file-upload mb-3">
+            <div class="row">
+              <div class="col-3">
+                <input id="fileUpload" type="file" class="form-control mb-3" accept="image/*" (change)="onFileSelect($event)" hidden>
+                <label for="fileUpload" class="btn-upload btn-primary btn w-100">Choose File</label>
+              </div>
+              <div class="col-9">
+                <input class="form-control" placeholder="Image Name" value="{{imageName}}" disabled>
+              </div>
             </div>
-            <div class="col-9">
-              <input class="form-control" placeholder="Image Name" ngModel="{{imageName}}" disabled>
-            </div>
+          </div>
+          <div class="w-100">
+            <button type="submit" class="btn btn-primary w-100">Submit</button>
           </div>
         </div>
       </div>
-    </div>
 
-    <!-- Show selected image -->
-    <div class="col-6 mb-3 d-flex justify-content-center align-items-center" #imageContainer style="min-height: 0;">
-      <img *ngIf="isImageSelected" [src]="imageSrc" alt="Image preview" style="max-width: 100%; max-height: 100%; object-fit: contain;">
+      <!-- Show selected image -->
+      <div class="col-6 mb-3 d-flex justify-content-center align-items-center" style="min-height: 0;">
+        <img *ngIf="isImageSelected" [src]="imageSrc" alt="Image preview" style="max-width: 100%; max-height: 100%; object-fit: contain;">
+      </div>
     </div>
-
-
-    <div class="w-100">
-      <button type="button" class="btn btn-primary w-100">Submit</button>
-    </div>
-  </div>
+  </form>
 </div>

@@ -1,23 +1,29 @@
-import {AfterViewInit, Component, OnInit} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {Artist} from '../../dto/artist';
+import {FormGroup, FormControl} from '@angular/forms';
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss']
 })
-export class HomeComponent implements OnInit, AfterViewInit {
+export class HomeComponent implements OnInit {
   isImageSelected = false;
   imageSrc: string | ArrayBuffer | null = null;
   imageName: string | null = null;
+  artworkForm: FormGroup | undefined;
   artists = Object.values(Artist);
 
   constructor() { }
 
   ngOnInit(): void {
-  }
-
-  ngAfterViewInit(): void {
+    this.artworkForm = new FormGroup({
+      title: new FormControl(),
+      artist: new FormControl(),
+      gallery: new FormControl(),
+      price: new FormControl(),
+      description: new FormControl()
+    });
   }
 
   onFileSelect(event: Event): void {
@@ -39,5 +45,8 @@ export class HomeComponent implements OnInit, AfterViewInit {
     reader.readAsDataURL(file);
   }
 
+  onSubmit(): void {
+    console.log(this.artworkForm?.value);
+  }
 
 }
