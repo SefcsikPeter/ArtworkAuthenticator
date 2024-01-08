@@ -1,6 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {Artist} from '../../dto/artist';
 import {FormGroup, FormControl} from '@angular/forms';
+import {ArtworkService} from '../../service/artwork.service';
+import {Artwork} from '../../dto/artwork';
 
 @Component({
   selector: 'app-home',
@@ -13,8 +15,13 @@ export class HomeComponent implements OnInit {
   imageName: string | null = null;
   artworkForm: FormGroup | undefined;
   artists = Object.values(Artist);
+  artwork: Artwork = {
+    image: ''
+  };
 
-  constructor() { }
+  constructor(
+    private service: ArtworkService
+  ) { }
 
   ngOnInit(): void {
     this.artworkForm = new FormGroup({
@@ -46,7 +53,33 @@ export class HomeComponent implements OnInit {
   }
 
   onSubmit(): void {
-    console.log(this.artworkForm?.value);
+    console.log('submitted form', this.artworkForm?.value);
+    if (this.artworkForm?.value.title) {
+      this.artwork.title = this.artworkForm?.value.title;
+    }
+    if (this.artworkForm?.value.artist) {
+      this.artwork.artist = this.artworkForm?.value.artist;
+    }
+    if (this.artworkForm?.value.gallery) {
+      this.artwork.gallery = this.artworkForm?.value.gallery;
+    }
+    if (this.artworkForm?.value.price) {
+      this.artwork.price = this.artworkForm?.value.price;
+    }
+    if (this.artworkForm?.value.description) {
+      this.artwork.description = this.artworkForm?.value.description;
+    }
+    if (typeof this.imageSrc === 'string') {
+      this.artwork.image = this.imageSrc;
+    }
+    this.service.analyse(this.artwork).subscribe({
+      next: data => {
+        console.log('passed to service');
+      },
+      error: error => {
+        console.error('Error analysing artwork', error);
+      }
+    });
   }
 
 }
