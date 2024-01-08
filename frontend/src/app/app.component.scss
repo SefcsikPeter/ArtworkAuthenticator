@@ -22,6 +22,28 @@ h1 {
   color: #fcf7fc;
 }
 
-.form-control::-webkit-input-placeholder {
+.form-control:disabled {
+  background-color: #302130;
+  border-color: #302130;
+  color: #fcf7fc;
+}
+
+.form-control::placeholder {
   color: #bdb5bd;
+}
+
+.custom-file-upload .btn-upload {
+  background-color: #BF40BF;
+  color: #fcf7fc;
+  padding: .375rem .75rem;
+  border-radius: .25rem;
+  cursor: pointer;
+  display: block;
+  width: 100%;
+  transition: background-color 0.2s ease;
+}
+
+.custom-file-upload .btn-upload:hover {
+  background-color: #A030A0;
+  color: #fcf7fc;
 }
