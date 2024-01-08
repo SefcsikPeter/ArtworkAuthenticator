@@ -9,6 +9,7 @@ import {Artist} from '../../dto/artist';
 export class HomeComponent implements OnInit, AfterViewInit {
   isImageSelected = false;
   imageSrc: string | ArrayBuffer | null = null;
+  imageName: string | null = null;
   artists = Object.values(Artist);
 
   constructor() { }
@@ -22,16 +23,21 @@ export class HomeComponent implements OnInit, AfterViewInit {
   onFileSelect(event: Event): void {
     const eventTarget = event.target as HTMLInputElement;
     const file = eventTarget.files?.[0];
+
     if (!file) {
       this.isImageSelected = false;
       return;
     }
+
     this.isImageSelected = true;
+    this.imageName = file.name; // Save the file name
+
     const reader = new FileReader();
     reader.onload = e => {
-      this.imageSrc = reader.result;
+      this.imageSrc = reader.result as string;
     };
     reader.readAsDataURL(file);
   }
+
 
 }
