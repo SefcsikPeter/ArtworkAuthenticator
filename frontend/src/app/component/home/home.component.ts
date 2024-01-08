@@ -1,4 +1,5 @@
 import {AfterViewInit, Component, OnInit} from '@angular/core';
+import {Artist} from '../../dto/artist';
 
 @Component({
   selector: 'app-home',
@@ -8,6 +9,7 @@ import {AfterViewInit, Component, OnInit} from '@angular/core';
 export class HomeComponent implements OnInit, AfterViewInit {
   isImageSelected = false;
   imageSrc: string | ArrayBuffer | null = null;
+  artists = Object.values(Artist);
 
   constructor() { }
 

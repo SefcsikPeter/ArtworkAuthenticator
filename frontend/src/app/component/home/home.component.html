@@ -10,6 +10,10 @@
         <input type="text" class="form-control mb-3" placeholder="Artist">
         <input type="text" class="form-control mb-3" placeholder="Selling Gallery">
         <input type="text" class="form-control mb-3" placeholder="Price">
+        <select class="form-control mb-3">
+          <option>Select Artist</option>
+          <option *ngFor="let artist of artists">{{artist}}</option>
+        </select>
         <textarea class="form-control mb-3" placeholder="Description and Other Information"></textarea>
         <div class="custom-file-upload mb-3">
           <div class="row">

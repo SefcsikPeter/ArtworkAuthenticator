@@ -16,6 +16,20 @@ h1 {
   --bs-btn-hover-border-color: #a133a1;
 }
 
+.btn-primary:active,
+.btn-primary:not(:disabled):not(.disabled):active {
+  background-color: #BF40BF !important;
+  color: #fcf7fc !important;
+  border-color: #7a2f7a !important;
+  box-shadow: inset 0 1px 1px #202020, 0 0 8px #573557 !important;
+}
+
+.btn-primary:focus {
+  background-color: #a133a1;
+  border-color: #7a2f7a;
+  box-shadow: inset 0 1px 1px #202020, 0 0 8px #573557;
+}
+
 .form-control {
   background-color: #302130;
   border-color: #302130;
@@ -30,6 +44,14 @@ h1 {
 
 .form-control::placeholder {
   color: #bdb5bd;
+}
+
+.form-control:focus {
+  background-color: #573557;
+  color: #fcf7fc;
+  outline: 2px solid #121212;
+  border-color: #7a2f7a;
+  box-shadow: inset 0 1px 1px #202020, 0 0 8px #573557;
 }
 
 .custom-file-upload .btn-upload {
@@ -47,3 +69,14 @@ h1 {
   background-color: #A030A0;
   color: #fcf7fc;
 }
+
+.custom-file-upload .btn-upload:focus {
+  border-color: #7a2f7a;
+  box-shadow: inset 0 1px 1px #202020, 0 0 8px #573557;
+}
+
+.custom-file-upload .btn-upload:active {
+  border-color: #7a2f7a;
+  box-shadow: inset 0 1px 1px #202020, 0 0 8px #573557;
+}
+
