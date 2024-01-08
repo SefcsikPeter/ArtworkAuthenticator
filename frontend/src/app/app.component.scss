@@ -1,0 +1,27 @@
+body {
+  background-color: #121212;
+}
+
+h1 {
+  color: #fcf7fc;
+}
+
+.btn-primary {
+  background-color: #BF40BF;
+  outline-color: #BF40BF;
+  border-color: #BF40BF;
+  color: #fcf7fc;
+  --bs-btn-hover-color: #fcf7fc;
+  --bs-btn-hover-bg: #a133a1;
+  --bs-btn-hover-border-color: #a133a1;
+}
+
+.form-control {
+  background-color: #302130;
+  border-color: #302130;
+  color: #fcf7fc;
+}
+
+.form-control::-webkit-input-placeholder {
+  color: #bdb5bd;
+}

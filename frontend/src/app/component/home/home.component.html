@@ -1,0 +1,28 @@
+<div>
+  <h1 class="display-4">Author Authenticator</h1>
+
+  <div class="input-area row d-flex col-10 offset-1">
+
+    <!-- INPUT -->
+    <div class="col-6 d-flex flex-column justify-content-between" #inputFieldsContainer>
+      <div>
+        <input type="text" class="form-control mb-3" placeholder="Title">
+        <input type="text" class="form-control mb-3" placeholder="Artist">
+        <input type="text" class="form-control mb-3" placeholder="Selling Gallery">
+        <input type="text" class="form-control mb-3" placeholder="Price">
+        <textarea class="form-control mb-3" placeholder="Description and Other Information"></textarea>
+        <input type="file" class="form-control mb-3" id="imageUpload" accept="image/*" (change)="onFileSelect($event)">
+      </div>
+    </div>
+
+    <!-- Show selected image -->
+    <div class="col-6 mb-3 d-flex justify-content-center align-items-center" #imageContainer style="min-height: 0;">
+      <img *ngIf="isImageSelected" [src]="imageSrc" alt="Image preview" style="max-width: 100%; max-height: 100%; object-fit: contain;">
+    </div>
+
+
+    <div class="w-100">
+      <button type="button" class="btn btn-primary w-100">Submit</button>
+    </div>
+  </div>
+</div>
