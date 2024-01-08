@@ -48,5 +48,5 @@ CREATE TABLE IF NOT EXISTS artwork
     gallery VARCHAR(1023),
     price VARCHAR(255),
     description VARCHAR(4095),
-    file_path VARCHAR(1023)
+    image LONGTEXT
 );

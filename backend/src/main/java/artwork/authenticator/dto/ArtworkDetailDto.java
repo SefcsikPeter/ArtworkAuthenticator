@@ -9,7 +9,7 @@ public record ArtworkDetailDto(
     String gallery,
     String price,
     String description,
-    String imagePath
+    String image
 ) {
 
 }
