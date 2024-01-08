@@ -2,7 +2,7 @@ package artwork.authenticator.entity;
 
 import artwork.authenticator.type.Artist;
 
-public class ArtworkDetail {
+public class Artwork {
   private Long id;
   private String title;
   private Artist artist;
