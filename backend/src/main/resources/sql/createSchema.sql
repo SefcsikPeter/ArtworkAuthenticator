@@ -50,3 +50,11 @@ CREATE TABLE IF NOT EXISTS artwork
     description VARCHAR(4095),
     image LONGTEXT
 );
+
+CREATE TABLE IF NOT EXISTS artwork_result
+(
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    artwork_id BIGINT NOT NULL,
+    neural_net_result VARCHAR(4095),
+    gpt_result LONGTEXT
+)
