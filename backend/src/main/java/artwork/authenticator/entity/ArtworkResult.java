@@ -10,31 +10,35 @@ public class ArtworkResult {
     return id;
   }
 
-  public void setId(Long id) {
+  public ArtworkResult setId(Long id) {
     this.id = id;
+    return this;
   }
 
   public Long getArtworkId() {
     return artworkId;
   }
 
-  public void setArtworkId(Long artworkId) {
+  public ArtworkResult setArtworkId(Long artworkId) {
     this.artworkId = artworkId;
+    return this;
   }
 
   public String getNeuralNetResult() {
     return neuralNetResult;
   }
 
-  public void setNeuralNetResult(String neuralNetResult) {
+  public ArtworkResult setNeuralNetResult(String neuralNetResult) {
     this.neuralNetResult = neuralNetResult;
+    return this;
   }
 
   public String getGptResult() {
     return gptResult;
   }
 
-  public void setGptResult(String gptResult) {
+  public ArtworkResult setGptResult(String gptResult) {
     this.gptResult = gptResult;
+    return this;
   }
 }

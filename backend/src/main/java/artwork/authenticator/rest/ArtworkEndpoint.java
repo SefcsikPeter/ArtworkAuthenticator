@@ -1,5 +1,6 @@
 package artwork.authenticator.rest;
 
+import artwork.authenticator.dto.ArtworkDetailAndResultDto;
 import artwork.authenticator.dto.ArtworkDetailDto;
 import artwork.authenticator.service.ArtworkService;
 import org.slf4j.Logger;
@@ -24,9 +25,9 @@ public class ArtworkEndpoint {
   }
 
   @PostMapping
-  public ResponseEntity<ArtworkDetailDto> analyse(@RequestBody ArtworkDetailDto artwork) {
+  public ArtworkDetailAndResultDto analyse(@RequestBody ArtworkDetailDto artwork) {
     LOG.info("POST " + BASE_PATH);
     LOG.info("Body of request:\n{}", artwork);
-    return null;
+    return this.service.analyse(artwork);
   }
 }

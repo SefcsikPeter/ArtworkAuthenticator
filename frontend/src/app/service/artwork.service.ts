@@ -3,6 +3,7 @@ import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {Artwork} from '../dto/artwork';
 import {environment} from '../../environments/environment';
+import {ArtworkResult} from "../dto/artworkResult";
 
 const baseUri = environment.backendUrl + '/artwork';
 @Injectable({
@@ -14,7 +15,7 @@ export class ArtworkService {
     private http: HttpClient
   ) { }
 
-  analyse(artwork: Artwork): Observable<Artwork> {
+  analyse(artwork: Artwork): Observable<ArtworkResult> {
     console.log(artwork);
     return this.http.post<Artwork>(
       baseUri,
