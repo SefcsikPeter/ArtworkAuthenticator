@@ -57,7 +57,7 @@ public class ArtworkResultJdbcDao implements ArtworkResultDao {
     return new ArtworkResult()
         .setId(key.longValue())
         .setArtworkId(result.artworkId())
-        .setNeuralNetResult(result.gptResult())
+        .setNeuralNetResult(result.neuralNetResult())
         .setGptResult(result.gptResult())
         ;
   }

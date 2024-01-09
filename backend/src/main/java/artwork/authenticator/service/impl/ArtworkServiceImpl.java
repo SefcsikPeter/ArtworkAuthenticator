@@ -13,6 +13,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.lang.invoke.MethodHandles;
 
 @Service
@@ -36,12 +39,35 @@ public class ArtworkServiceImpl implements ArtworkService {
 
     // TODO: do the image analysis
     Long artworkId = analysedArtwork.getId();
-    String neuralNetResult = "this is a test for the net result";
+    String neuralNetResult = runPythonScript("LETSTESTTHIS");
     String gptResult = "this is a test for the gpt result";
 
     ArtworkResultDto resultDto = new ArtworkResultDto(artworkId, neuralNetResult, gptResult);
     ArtworkResult result = artworkResultDao.create(resultDto);
 
     return mapper.entityToDto(analysedArtwork, result);
+  }
+
+  private String runPythonScript(String image) {
+    String output = "";
+    try {
+      String pythonScriptPath = "C:\\Users\\ptsef\\OneDrive\\Desktop\\BSC\\UserInterface\\template-java\\backend\\src\\main\\java\\artwork\\authenticator\\python\\authenticator.py";
+
+      ProcessBuilder pb = new ProcessBuilder("python", pythonScriptPath, image);
+      Process p = pb.start();
+
+      BufferedReader in = new BufferedReader(new InputStreamReader(p.getInputStream()));
+      String line;
+      while ((line = in.readLine()) != null) {
+        System.out.println(line);
+        output = line;
+      }
+
+      int exitCode = p.waitFor();
+      System.out.println("Exited with code " + exitCode);
+    } catch (IOException | InterruptedException e) {
+      e.printStackTrace();
+    }
+    return output;
   }
 }
