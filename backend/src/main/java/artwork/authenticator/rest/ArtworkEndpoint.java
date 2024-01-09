@@ -27,7 +27,7 @@ public class ArtworkEndpoint {
   @PostMapping
   public ArtworkDetailAndResultDto analyse(@RequestBody ArtworkDetailDto artwork) {
     LOG.info("POST " + BASE_PATH);
-    LOG.info("Body of request:\n{}", artwork);
+    LOG.trace("Body of request:\n{}", artwork);
     return this.service.analyse(artwork);
   }
 }
