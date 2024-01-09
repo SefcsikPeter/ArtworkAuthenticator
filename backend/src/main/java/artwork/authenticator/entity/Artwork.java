@@ -9,61 +9,68 @@ public class Artwork {
   private String gallery;
   private String price;
   private String description;
-  private String imagePath;
+  private String image;
 
   public Long getId() {
     return id;
   }
 
-  public void setId(Long id) {
+  public Artwork setId(Long id) {
     this.id = id;
+    return this;
   }
 
   public String getTitle() {
     return title;
   }
 
-  public void setTitle(String title) {
+  public Artwork setTitle(String title) {
     this.title = title;
+    return this;
   }
 
   public Artist getArtist() {
     return artist;
   }
 
-  public void setArtist(Artist artist) {
+  public Artwork setArtist(Artist artist) {
     this.artist = artist;
+    return this;
   }
 
   public String getGallery() {
     return gallery;
   }
 
-  public void setGallery(String gallery) {
+  public Artwork setGallery(String gallery) {
     this.gallery = gallery;
+    return this;
   }
 
   public String getPrice() {
     return price;
   }
 
-  public void setPrice(String price) {
+  public Artwork setPrice(String price) {
     this.price = price;
+    return this;
   }
 
   public String getDescription() {
     return description;
   }
 
-  public void setDescription(String description) {
+  public Artwork setDescription(String description) {
     this.description = description;
+    return this;
   }
 
-  public String getImagePath() {
-    return imagePath;
+  public String getImage() {
+    return image;
   }
 
-  public void setImagePath(String imagePath) {
-    this.imagePath = imagePath;
+  public Artwork setImage(String image) {
+    this.image = image;
+    return this;
   }
 }
