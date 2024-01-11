@@ -33,4 +33,16 @@ public class ArtworkResultMapper {
         artworkResult.getGptResult()
     );
   }
+
+  public ArtworkResultDto entityToDto(ArtworkResult result) {
+    LOG.trace("entityToDto({})", result);
+    if (result == null) {
+      return null;
+    }
+    return new ArtworkResultDto(
+        result.getArtworkId(),
+        result.getNeuralNetResult(),
+        result.getGptResult()
+    );
+  }
 }

@@ -1,8 +1,6 @@
 package artwork.authenticator.persistence.impl;
 
-import artwork.authenticator.dto.ArtworkDetailDto;
 import artwork.authenticator.dto.ArtworkResultDto;
-import artwork.authenticator.entity.Artwork;
 import artwork.authenticator.entity.ArtworkResult;
 import artwork.authenticator.exception.FatalException;
 import artwork.authenticator.persistence.ArtworkResultDao;
@@ -14,8 +12,11 @@ import org.springframework.stereotype.Repository;
 
 import java.lang.invoke.MethodHandles;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
+import java.util.List;
 
 @Repository
 public class ArtworkResultJdbcDao implements ArtworkResultDao {
@@ -23,6 +24,7 @@ public class ArtworkResultJdbcDao implements ArtworkResultDao {
   private static final String TABLE_NAME = "artwork_result";
   private static final String SQL_CREATE = "INSERT INTO " + TABLE_NAME
       + " (artwork_id, neural_net_result, gpt_result) VALUES (?, ?, ?)";
+  private static final String SQL_SELECT_BY_ID = "SELECT * FROM " + TABLE_NAME + " WHERE id = ?";
   private final JdbcTemplate jdbcTemplate;
 
   public ArtworkResultJdbcDao(JdbcTemplate jdbcTemplate) {
@@ -59,6 +61,30 @@ public class ArtworkResultJdbcDao implements ArtworkResultDao {
         .setArtworkId(result.artworkId())
         .setNeuralNetResult(result.neuralNetResult())
         .setGptResult(result.gptResult())
+        ;
+  }
+
+  @Override
+  public ArtworkResult getById(Long id) throws SQLException {
+    LOG.trace("getById({})", id);
+    List<ArtworkResult> results;
+    results = jdbcTemplate.query(SQL_SELECT_BY_ID, this::mapRow, id);
+    if (results.size() == 0) {
+      throw new SQLException("Result with id %d not found!".formatted(id));
+    }
+    if (results.size() > 1) {
+      throw new FatalException("There are more results with id %d than one".formatted(id));
+    }
+    return results.get(0);
+  }
+
+  private ArtworkResult mapRow(ResultSet result, int rownum) throws SQLException {
+    LOG.trace("mapRow({}, {})", result, rownum);
+    return new ArtworkResult()
+        .setId(result.getLong("id"))
+        .setArtworkId(result.getLong("artwork_id"))
+        .setNeuralNetResult(result.getString("neural_net_result"))
+        .setGptResult(result.getString("gpt_result"))
         ;
   }
 }
