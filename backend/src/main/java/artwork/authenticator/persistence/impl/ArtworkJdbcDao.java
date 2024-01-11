@@ -3,7 +3,9 @@ package artwork.authenticator.persistence.impl;
 import artwork.authenticator.dto.ArtworkDetailDto;
 import artwork.authenticator.entity.Artwork;
 import artwork.authenticator.exception.FatalException;
+import artwork.authenticator.exception.NotFoundException;
 import artwork.authenticator.persistence.ArtworkDao;
+import artwork.authenticator.type.Artist;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -12,8 +14,11 @@ import org.springframework.stereotype.Repository;
 
 import java.lang.invoke.MethodHandles;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
+import java.util.List;
 
 @Repository
 public class ArtworkJdbcDao implements ArtworkDao {
@@ -21,6 +26,7 @@ public class ArtworkJdbcDao implements ArtworkDao {
   private static final String TABLE_NAME = "artwork";
   private static final String SQL_CREATE = "INSERT INTO " + TABLE_NAME
       + " (title, artist, gallery, price, description, image) VALUES (?, ?, ?, ?, ?, ?)";
+  private static final String SQL_SELECT_BY_ID = "SELECT * FROM " + TABLE_NAME + " WHERE id = ?";
   private final JdbcTemplate jdbcTemplate;
 
   public ArtworkJdbcDao(JdbcTemplate jdbcTemplate) {
@@ -75,6 +81,34 @@ public class ArtworkJdbcDao implements ArtworkDao {
         .setPrice(artwork.price())
         .setDescription(artwork.description())
         .setImage(artwork.image())
+        ;
+  }
+
+  @Override
+  public Artwork getById(Long id) throws NotFoundException {
+    LOG.trace("getById({})", id);
+    List<Artwork> artworks;
+    artworks = jdbcTemplate.query(SQL_SELECT_BY_ID, this::mapRow, id);
+
+    if (artworks.isEmpty()) {
+      throw new NotFoundException("Artwork with Id %d not found!".formatted(id));
+    }
+    if (artworks.size() > 1) {
+      throw new FatalException("Too many artworks with Id %d! found".formatted(id));
+    }
+    return artworks.get(0);
+  }
+
+  private Artwork mapRow(ResultSet result, int rownum) throws SQLException {
+    LOG.trace("mapRow({}, {})", result, rownum);
+    return new Artwork()
+        .setId(result.getLong("id"))
+        .setTitle(result.getString("title"))
+        .setArtist(Artist.valueOf(result.getString("artist")))
+        .setGallery(result.getString("gallery"))
+        .setPrice(result.getString("price"))
+        .setDescription(result.getString("description"))
+        .setImage(result.getString("image"))
         ;
   }
 }

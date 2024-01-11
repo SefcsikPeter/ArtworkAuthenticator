@@ -5,6 +5,8 @@ import artwork.authenticator.dto.ArtworkDetailDto;
 import artwork.authenticator.dto.ArtworkResultDto;
 import artwork.authenticator.entity.Artwork;
 import artwork.authenticator.entity.ArtworkResult;
+import artwork.authenticator.exception.NotFoundException;
+import artwork.authenticator.mapper.ArtworkMapper;
 import artwork.authenticator.mapper.ArtworkResultMapper;
 import artwork.authenticator.persistence.ArtworkDao;
 import artwork.authenticator.persistence.ArtworkResultDao;
@@ -29,12 +31,18 @@ public class ArtworkServiceImpl implements ArtworkService {
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
   private final ArtworkDao artworkDao;
   private final ArtworkResultDao artworkResultDao;
-  private final ArtworkResultMapper mapper;
+  private final ArtworkResultMapper artworkResultMapper;
+  private final ArtworkMapper artworkMapper;
 
-  public ArtworkServiceImpl(ArtworkDao artworkDao, ArtworkResultDao artworkResultDao, ArtworkResultMapper mapper) {
+  public ArtworkServiceImpl(
+      ArtworkDao artworkDao,
+      ArtworkResultDao artworkResultDao,
+      ArtworkResultMapper artworkResultMapper,
+      ArtworkMapper artworkMapper) {
     this.artworkDao = artworkDao;
     this.artworkResultDao = artworkResultDao;
-    this.mapper = mapper;
+    this.artworkResultMapper = artworkResultMapper;
+    this.artworkMapper = artworkMapper;
   }
 
   @Override
@@ -51,7 +59,14 @@ public class ArtworkServiceImpl implements ArtworkService {
     ArtworkResultDto resultDto = new ArtworkResultDto(artworkId, neuralNetResult, gptResult);
     ArtworkResult result = artworkResultDao.create(resultDto);
 
-    return mapper.entityToDto(analysedArtwork, result);
+    return artworkResultMapper.entityToDto(analysedArtwork, result);
+  }
+
+  @Override
+  public ArtworkDetailDto getById(Long id) throws NotFoundException {
+    LOG.trace("getById({})", id);
+    Artwork artwork = artworkDao.getById(id);
+    return artworkMapper.entityToDto(artwork);
   }
 
   private String runPythonScript(String image) {
