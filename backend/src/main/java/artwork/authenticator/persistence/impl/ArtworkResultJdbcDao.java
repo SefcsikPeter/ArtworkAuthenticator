@@ -3,6 +3,7 @@ package artwork.authenticator.persistence.impl;
 import artwork.authenticator.dto.ArtworkResultDto;
 import artwork.authenticator.entity.ArtworkResult;
 import artwork.authenticator.exception.FatalException;
+import artwork.authenticator.exception.NotFoundException;
 import artwork.authenticator.persistence.ArtworkResultDao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -65,12 +66,12 @@ public class ArtworkResultJdbcDao implements ArtworkResultDao {
   }
 
   @Override
-  public ArtworkResult getById(Long id) throws SQLException {
+  public ArtworkResult getById(Long id) throws NotFoundException {
     LOG.trace("getById({})", id);
     List<ArtworkResult> results;
     results = jdbcTemplate.query(SQL_SELECT_BY_ID, this::mapRow, id);
     if (results.size() == 0) {
-      throw new SQLException("Result with id %d not found!".formatted(id));
+      throw new NotFoundException("Result with id %d not found!".formatted(id));
     }
     if (results.size() > 1) {
       throw new FatalException("There are more results with id %d than one".formatted(id));

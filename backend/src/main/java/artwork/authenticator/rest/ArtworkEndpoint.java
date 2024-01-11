@@ -5,7 +5,6 @@ import artwork.authenticator.dto.ArtworkDetailDto;
 import artwork.authenticator.service.ArtworkService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,7 +17,7 @@ import java.lang.invoke.MethodHandles;
 public class ArtworkEndpoint {
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
   static final String BASE_PATH = "/artwork";
-  private ArtworkService service;
+  private final ArtworkService service;
 
   public ArtworkEndpoint(ArtworkService artworkService) {
     this.service = artworkService;

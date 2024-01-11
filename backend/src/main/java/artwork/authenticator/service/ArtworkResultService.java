@@ -1,9 +1,8 @@
 package artwork.authenticator.service;
 
 import artwork.authenticator.dto.ArtworkResultDto;
-
-import java.sql.SQLException;
+import artwork.authenticator.exception.NotFoundException;
 
 public interface ArtworkResultService {
-  ArtworkResultDto getById(Long id) throws SQLException;
+  ArtworkResultDto getById(Long id) throws NotFoundException;
 }

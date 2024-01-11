@@ -2,6 +2,7 @@ package artwork.authenticator.service.impl;
 
 import artwork.authenticator.dto.ArtworkResultDto;
 import artwork.authenticator.entity.ArtworkResult;
+import artwork.authenticator.exception.NotFoundException;
 import artwork.authenticator.mapper.ArtworkResultMapper;
 import artwork.authenticator.persistence.ArtworkResultDao;
 import artwork.authenticator.service.ArtworkResultService;
@@ -10,7 +11,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.lang.invoke.MethodHandles;
-import java.sql.SQLException;
 
 @Component
 public class ArtworkResultServiceImpl implements ArtworkResultService {
@@ -23,7 +23,7 @@ public class ArtworkResultServiceImpl implements ArtworkResultService {
     this.dao = dao;
   }
   @Override
-  public ArtworkResultDto getById(Long id) throws SQLException {
+  public ArtworkResultDto getById(Long id) throws NotFoundException {
     LOG.trace("getById({})", id);
     ArtworkResult result = dao.getById(id);
     return mapper.entityToDto(result);
