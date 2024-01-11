@@ -16,9 +16,7 @@ export class HomeComponent implements OnInit {
   imageName: string | null = null;
   artworkForm: FormGroup | undefined;
   artists = Object.values(Artist);
-  artwork: Artwork = {
-    image: ''
-  };
+  artwork: Artwork = {};
 
   constructor(
     private service: ArtworkService,
