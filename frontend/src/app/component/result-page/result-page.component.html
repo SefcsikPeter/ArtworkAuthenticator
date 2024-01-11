@@ -1,5 +1,9 @@
-<h1 class="display-4 title-h1">Results</h1>
-
+<div class="row">
+  <button class="col-2 btn btn-primary" routerLink="/home" style="height: 100%">
+    Go Back
+  </button>
+  <h1 class="col-8 display-4 title-h1">Results</h1>
+</div>
 <div class="input-area row d-flex col-12">
   <!-- INPUT -->
   <div class="col-4">
@@ -19,7 +23,7 @@
     </div>
   </div>
   <div class="col-4">
-    <div class="col-6 mb-3 d-flex justify-content-center align-items-center" style="min-height: 0;">
+    <div class="mb-3 d-flex justify-content-center align-items-center" style="min-height: 0;">
       <img [src]="this.artwork.image" alt="Image preview" style="max-width: 100%; max-height: 100%; object-fit: contain;">
     </div>
   </div>
@@ -28,7 +32,6 @@
     <ul class="list-group">
       <li class="list-group-item"> Top 1 result: {{this.top1Artist}} {{this.top1ArtistProb}}%</li>
       <li class="list-group-item"> Selected: {{this.selectedArtist}} {{this.selectedArtistProb}}%</li>
-      <li class="list-group-item"> asd</li>
     </ul>
   </div>
 </div>
