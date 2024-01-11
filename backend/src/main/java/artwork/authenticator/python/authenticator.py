@@ -83,4 +83,4 @@ indices = indices[0].cpu().numpy().tolist()
 # Index of selected artist
 index = indices.index(artist_ind)
 
-print(f"{indices[0]}, {prob[0]}, {indices[index]}, {prob[index]}")
+print(f"{indices[0]}, {prob[0]}, {prob[index]}")
