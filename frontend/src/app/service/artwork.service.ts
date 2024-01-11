@@ -22,4 +22,8 @@ export class ArtworkService {
       artwork
     );
   }
+
+  getById(id: number) {
+    return this.http.get(baseUri + '/' + id);
+  }
 }

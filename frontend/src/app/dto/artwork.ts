@@ -7,5 +7,5 @@ export interface Artwork {
   gallery?: string;
   price?: string;
   description?: string;
-  image: string;
+  image?: string;
 }
