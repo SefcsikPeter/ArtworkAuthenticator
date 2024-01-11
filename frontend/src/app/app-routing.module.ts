@@ -6,7 +6,7 @@ import {ResultPageComponent} from './component/result-page/result-page.component
 const routes: Routes = [
   {path: '', redirectTo: 'home', pathMatch: 'full'},
   {path: 'home', component: HomeComponent},
-  {path: 'result/:id', component: ResultPageComponent},
+  {path: 'results/:id', component: ResultPageComponent},
   {path: '**', redirectTo: 'horses'},
 ];
 

@@ -77,7 +77,7 @@ export class HomeComponent implements OnInit {
     this.service.analyse(this.artwork).subscribe({
       next: data => {
         console.log('passed to service', data);
-        this.router.navigate(['/result', data.resultId]);
+        this.router.navigate(['/results', data.resultId]);
       },
       error: error => {
         console.error('Error analysing artwork', error);
