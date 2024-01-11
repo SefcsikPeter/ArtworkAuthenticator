@@ -3,7 +3,7 @@ import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {Artwork} from '../dto/artwork';
 import {environment} from '../../environments/environment';
-import {ArtworkResult} from "../dto/artworkResult";
+import {ArtworkResult} from '../dto/artwork-result';
 
 const baseUri = environment.backendUrl + '/artwork';
 @Injectable({

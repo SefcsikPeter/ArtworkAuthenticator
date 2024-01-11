@@ -25,7 +25,7 @@ public class ResultEndpoint {
     this.service = service;
   }
 
-  @GetMapping
+  @GetMapping("{id}")
   public ArtworkResultDto getById(@PathVariable long id) {
     LOG.info("GET " + BASE_PATH + "/{}", id);
     try {
