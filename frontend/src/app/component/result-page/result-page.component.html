@@ -1,0 +1,55 @@
+<h1 class="display-4 title-h1">Results</h1>
+
+<div class="input-area row d-flex col-12">
+  <!-- INPUT -->
+  <div class="col-4 d-flex flex-column justify-content-between">
+    <div>
+      <input type="text" class="form-control mb-3" placeholder="Title" formControlName="title">
+      <input type="text" class="form-control mb-3" formControlName="artist" placeholder="Artist">
+      <input type="text" class="form-control mb-3" placeholder="Selling Gallery" formControlName="gallery">
+      <input type="text" class="form-control mb-3" placeholder="Price" formControlName="price">
+      <textarea class="form-control mb-3" placeholder="Description and Other Information" formControlName="description"></textarea>
+      <div class="custom-file-upload mb-3">
+        <input class="form-control" placeholder="Image Name" value="{{imageName}}" disabled>
+      </div>
+    </div>
+  </div>
+  <div class="col-4">
+    <h1>
+      This is the place of the image
+    </h1>
+  </div>
+  <div class="col-4">
+    <h1 class="display-5">
+      DenseNet Results:
+    </h1>
+    <h1 class="display-6">
+      1. Alfons Walde 67%
+    </h1>
+    <h1 class="display-6">
+      2. Rembrandt 23%
+    </h1>
+    <h1 class="display-6">
+      3. Pablo Picasso 10%
+    </h1>
+  </div>
+  <!-- Show selected image -->
+  <div class="col-6 mb-3 d-flex justify-content-center align-items-center" style="min-height: 0;">
+    <img *ngIf="isImageSelected" [src]="imageSrc" alt="Image preview" style="max-width: 100%; max-height: 100%; object-fit: contain;">
+  </div>
+</div>
+
+<div>
+  <h1>
+    GPT Results:
+  </h1>
+  <a>
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut vitae justo metus. Integer vitae ex eget diam porttitor efficitur eget vitae lorem. Ut a sagittis tellus. Aliquam odio sapien, tincidunt a tristique ac, fermentum vel metus. Phasellus sit amet maximus nibh. In ornare purus ut sem fringilla, at ornare enim molestie. Quisque ac felis vehicula, venenatis quam non, facilisis elit. Sed vestibulum enim eu ipsum sagittis, a iaculis felis scelerisque.
+
+    Integer condimentum erat neque, id luctus mi suscipit sed. Suspendisse sit amet dapibus neque. Quisque leo purus, suscipit eu dolor ac, ultrices pharetra nunc. Aenean id varius turpis, et bibendum lectus. Cras sollicitudin, odio sed pharetra pulvinar, massa risus cursus dui, vel bibendum lectus erat a libero. Maecenas ultrices eu mauris at congue. Donec venenatis neque ac euismod tincidunt. Phasellus justo tellus, mollis ornare ex eu, efficitur ultricies tellus. Quisque placerat malesuada tellus non varius.
+
+    Mauris in efficitur risus. Sed auctor placerat nunc non dapibus. Ut aliquam bibendum lorem eget scelerisque. Nunc suscipit porttitor arcu, a interdum ligula feugiat id. Pellentesque in massa eget mauris fermentum auctor. Pellentesque in mattis lacus. Fusce varius ornare est. In augue nisl, hendrerit et euismod sagittis, molestie eu felis. In quis nunc ac diam posuere finibus. Duis tristique non augue sed efficitur. Suspendisse porttitor turpis at suscipit viverra.
+
+    Morbi accumsan cursus urna. Integer sollicitudin dapibus ex, eget rutrum ex condimentum id. Ut imperdiet magna magna, sed semper lorem fringilla quis. Praesent quis semper libero. Donec non nisi est. Cras non mattis mauris. Etiam rutrum.
+  </a>
+</div>

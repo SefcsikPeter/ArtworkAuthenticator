@@ -3,6 +3,7 @@ import {Artist} from '../../dto/artist';
 import {FormGroup, FormControl} from '@angular/forms';
 import {ArtworkService} from '../../service/artwork.service';
 import {Artwork} from '../../dto/artwork';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-home',
@@ -20,7 +21,8 @@ export class HomeComponent implements OnInit {
   };
 
   constructor(
-    private service: ArtworkService
+    private service: ArtworkService,
+    private router: Router
   ) { }
 
   ngOnInit(): void {
@@ -75,6 +77,7 @@ export class HomeComponent implements OnInit {
     this.service.analyse(this.artwork).subscribe({
       next: data => {
         console.log('passed to service', data);
+        this.router.navigate(['/result', data.resultId]);
       },
       error: error => {
         console.error('Error analysing artwork', error);

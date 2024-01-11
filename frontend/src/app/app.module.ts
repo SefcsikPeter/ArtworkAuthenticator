@@ -14,6 +14,7 @@ import {HeaderComponent} from './component/header/header.component';
 import {HorseCreateEditComponent} from './component/horse/horse-create-edit/horse-create-edit.component';
 import {HorseComponent} from './component/horse/horse.component';
 import { HomeComponent } from './component/home/home.component';
+import { ResultPageComponent } from './component/result-page/result-page.component';
 
 @NgModule({
   declarations: [
@@ -23,6 +24,7 @@ import { HomeComponent } from './component/home/home.component';
     HorseCreateEditComponent,
     AutocompleteComponent,
     HomeComponent,
+    ResultPageComponent,
   ],
     imports: [
         BrowserModule,
