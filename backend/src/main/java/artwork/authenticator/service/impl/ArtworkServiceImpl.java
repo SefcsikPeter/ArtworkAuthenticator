@@ -1,6 +1,5 @@
 package artwork.authenticator.service.impl;
 
-import artwork.authenticator.dto.ArtworkDetailAndResultDto;
 import artwork.authenticator.dto.ArtworkDetailDto;
 import artwork.authenticator.dto.ArtworkResultDto;
 import artwork.authenticator.entity.Artwork;
@@ -46,7 +45,7 @@ public class ArtworkServiceImpl implements ArtworkService {
   }
 
   @Override
-  public ArtworkDetailAndResultDto analyse(ArtworkDetailDto artwork) {
+  public Long analyse(ArtworkDetailDto artwork) {
     LOG.trace("analyse({})", artwork);
     // Save artwork
     Artwork analysedArtwork = artworkDao.create(artwork);
@@ -59,7 +58,7 @@ public class ArtworkServiceImpl implements ArtworkService {
     ArtworkResultDto resultDto = new ArtworkResultDto(artworkId, neuralNetResult, gptResult);
     ArtworkResult result = artworkResultDao.create(resultDto);
 
-    return artworkResultMapper.entityToDto(analysedArtwork, result);
+    return result.getId();
   }
 
   @Override

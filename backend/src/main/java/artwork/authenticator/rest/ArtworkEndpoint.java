@@ -1,6 +1,5 @@
 package artwork.authenticator.rest;
 
-import artwork.authenticator.dto.ArtworkDetailAndResultDto;
 import artwork.authenticator.dto.ArtworkDetailDto;
 import artwork.authenticator.exception.NotFoundException;
 import artwork.authenticator.service.ArtworkService;
@@ -29,7 +28,7 @@ public class ArtworkEndpoint {
   }
 
   @PostMapping
-  public ArtworkDetailAndResultDto analyse(@RequestBody ArtworkDetailDto artwork) {
+  public Long analyse(@RequestBody ArtworkDetailDto artwork) {
     LOG.info("POST " + BASE_PATH);
     LOG.trace("Body of request:\n{}", artwork);
     return this.service.analyse(artwork);
