@@ -19,9 +19,9 @@
     </div>
   </div>
   <div class="col-4">
-    <h1>
-      This is the place of the image
-    </h1>
+    <div class="col-6 mb-3 d-flex justify-content-center align-items-center" style="min-height: 0;">
+      <img [src]="this.artwork.image" alt="Image preview" style="max-width: 100%; max-height: 100%; object-fit: contain;">
+    </div>
   </div>
   <div class="col-4">
     <h1 class="display-5"> DenseNet Results: </h1>
@@ -30,10 +30,6 @@
       <li class="list-group-item"> asd</li>
       <li class="list-group-item"> asd</li>
     </ul>
-  </div>
-  <!-- Show selected image -->
-  <div class="col-6 mb-3 d-flex justify-content-center align-items-center" style="min-height: 0;">
-    <img *ngIf="isImageSelected" [src]="imageSrc" alt="Image preview" style="max-width: 100%; max-height: 100%; object-fit: contain;">
   </div>
 </div>
 
