@@ -10,6 +10,7 @@ import artwork.authenticator.mapper.ArtworkResultMapper;
 import artwork.authenticator.persistence.ArtworkDao;
 import artwork.authenticator.persistence.ArtworkResultDao;
 import artwork.authenticator.service.ArtworkService;
+import artwork.authenticator.type.Artist;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -19,7 +20,7 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.invoke.MethodHandles;
@@ -50,9 +51,9 @@ public class ArtworkServiceImpl implements ArtworkService {
     // Save artwork
     Artwork analysedArtwork = artworkDao.create(artwork);
 
-    // TODO: do the image analysis
     Long artworkId = analysedArtwork.getId();
-    String neuralNetResult = runPythonScript(artwork.image());
+    String neuralNetResult = runPythonScript(artwork.image(), artworkId, Artist.getArtistIndex(artwork.artist()));
+    // TODO: Add gpt4 api access
     String gptResult = "this is a test for the gpt result";
 
     ArtworkResultDto resultDto = new ArtworkResultDto(artworkId, neuralNetResult, gptResult);
@@ -68,16 +69,20 @@ public class ArtworkServiceImpl implements ArtworkService {
     return artworkMapper.entityToDto(artwork);
   }
 
-  private String runPythonScript(String image) {
+  private String runPythonScript(String image, Long artworkId, int artistIndex) {
     String output = "";
-    try {
-      String pythonScriptPath = "C:\\Users\\ptsef\\OneDrive\\Desktop\\BSC\\UserInterface\\template-java\\backend\\src\\main\\java\\artwork\\authenticator\\python\\authenticator.py";
-      String condaEnvPath = "C:\\ProgramData\\miniconda3\\envs\\gcv_exercise_4";
-      String condaActivateScript = "conda activate " + condaEnvPath;
-      String pythonExecutable = condaEnvPath + "\\python";
+    //TODO: change these paths if on different computer or trying to execute with different env
+    String pythonScriptPath = "C:\\Users\\ptsef\\OneDrive\\Desktop\\BSC\\UserInterface\\template-java\\backend\\src\\main\\java\\artwork\\authenticator\\python\\authenticator.py";
+    String condaEnvPath = "C:\\ProgramData\\miniconda3\\envs\\gcv_exercise_4";
+    String baseFolderPath = "C:/Users/ptsef/OneDrive/Desktop/BSC/UserInterface/template-java/backend/images";
 
-      image = resizeImage(image);
-      ProcessBuilder pb = new ProcessBuilder("cmd", "/c", condaActivateScript, "&&", pythonExecutable, pythonScriptPath, image);
+    String condaActivateScript = "conda activate " + condaEnvPath;
+    String pythonExecutable = condaEnvPath + "\\python";
+
+    try {
+      String imagePath = resizeImage(image, baseFolderPath, artworkId);
+      ProcessBuilder pb =
+          new ProcessBuilder("cmd", "/c", condaActivateScript, "&&", pythonExecutable, pythonScriptPath, imagePath, "" + artistIndex);
       Process p = pb.start();
 
       BufferedReader in = new BufferedReader(new InputStreamReader(p.getInputStream()));
@@ -101,7 +106,7 @@ public class ArtworkServiceImpl implements ArtworkService {
     return output;
   }
 
-  public String resizeImage(String base64Image) {
+  public String resizeImage(String base64Image, String baseFolderPath, Long id) {
     try {
       base64Image = base64Image.substring(base64Image.indexOf(",") + 1);
 
@@ -120,12 +125,12 @@ public class ArtworkServiceImpl implements ArtworkService {
       g.drawImage(originalImage, 0, 0, newWidth, newHeight, null);
       g.dispose();
 
-      // Encode resized image to Base64
-      ByteArrayOutputStream baos = new ByteArrayOutputStream();
-      ImageIO.write(resizedImage, "jpg", baos);
-      byte[] resizedBytes = baos.toByteArray();
-      String img = Base64.getEncoder().encodeToString(resizedBytes);
-      return img;
+      // Save resized image to the specified file path
+      String outputPath = baseFolderPath + "/img" + id + ".jpeg";
+      File outputFile = new File(outputPath);
+      ImageIO.write(resizedImage, "jpg", outputFile);
+
+      return outputPath;
     } catch (IOException e) {
       LOG.error("Error resizing image " + e.getMessage());
     }

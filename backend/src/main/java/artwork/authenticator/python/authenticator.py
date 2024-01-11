@@ -4,7 +4,7 @@ import torchvision.models as models
 import torchvision.transforms as transforms
 from torchvision.transforms import ToPILImage
 from torch.utils.data import DataLoader, Dataset
-from torchvision.io import decode_image
+from torchvision.io import decode_image, read_image
 import torch.nn.functional as F
 from torch import nn, optim
 import pandas as pd
@@ -39,22 +39,24 @@ test_transforms = transforms.Compose([
         transforms.ToTensor(),
         transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
     ])
+to_pil = ToPILImage()
 
-# Check if any arguments were passed, get image if given
-image = ''
+# Check if any arguments were passed, get image and artist label if given
+image_path = ''
+artist_ind = ''
+# Check if at least one argument was passed (excluding the script name)
 if len(sys.argv) > 1:
-    for i, arg in enumerate(sys.argv[1:], start=1):
-        image = arg
-else:
-    print("No arguments were passed.")
+    image_path = sys.argv[1]  # First argument
 
-if image != '':
-    image_data = base64.b64decode(image)
-    buffer = io.BytesIO(image_data)
-    image_tensor = torch.ByteTensor(list(buffer.getvalue()))
-    image_tensor = decode_image(image_tensor)
-    to_pil = ToPILImage()
-    pil_image = to_pil(image_tensor)
+# Check if at least two arguments were passed
+if len(sys.argv) > 2:
+    artist_ind = int(sys.argv[2])  # Second argument
+else:
+    print("Not enough arguments were passed.")
+
+if image_path != '':
+    image = read_image(image_path)
+    pil_image = to_pil(image)
     transformed_image = test_transforms(pil_image)
 
 # Ensure the transformed image tensor has a batch dimension
@@ -72,12 +74,13 @@ with torch.no_grad():
 # Apply softmax to convert logits to probabilities
 probabilities = F.softmax(model_output, dim=1)
 
-# Get the top 3 predictions and their probabilities
-top3_prob, top3_indices = torch.topk(probabilities, 3)
+prob, indices = torch.topk(probabilities, 24)
 
 # Convert to Python lists for easier handling
-top3_prob = top3_prob[0].cpu().numpy().tolist()
-top3_indices = top3_indices[0].cpu().numpy().tolist()
+prob = prob[0].cpu().numpy().tolist()
+indices = indices[0].cpu().numpy().tolist()
 
-# Print the top 3 predictions with their probabilities
-print(f"{top3_indices[0]}: {top3_prob[0]}, {top3_indices[1]}: {top3_prob[1]}, {top3_indices[2]}: {top3_prob[2]}")
+# Index of selected artist
+index = indices.index(artist_ind)
+
+print(f"{indices[0]}, {prob[0]}, {indices[index]}, {prob[index]}")

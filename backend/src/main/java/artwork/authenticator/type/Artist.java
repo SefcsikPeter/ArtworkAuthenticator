@@ -24,5 +24,15 @@ public enum Artist {
   Rembrandt,
   Salvador_Dali,
   Vincent_van_Gogh,
-  Alfons_Walde
+  Alfons_Walde;
+
+  public static int getArtistIndex(Artist artist) {
+    Artist[] artists = Artist.values();
+    for (int i = 0; i < artists.length; i++) {
+      if (artists[i] == artist) {
+        return i;
+      }
+    }
+    return -1; // Return -1 if the artist is not found (optional)
+  }
 }
