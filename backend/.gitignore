@@ -7,6 +7,9 @@ target/
 # db
 *.db
 
+#image working folder
+images/
+
 # log
 /log/
 *.log
