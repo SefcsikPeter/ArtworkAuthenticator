@@ -51,9 +51,12 @@ public class ArtworkServiceImpl implements ArtworkService {
     // Save artwork
     Artwork analysedArtwork = artworkDao.create(artwork);
 
+    String baseFolderPath = "C:/Users/ptsef/OneDrive/Desktop/BSC/UserInterface/template-java/backend/images";
+
     Long artworkId = analysedArtwork.getId();
-    String neuralNetResult = runPythonScript(artwork.image(), artworkId, Artist.getArtistIndex(artwork.artist()));
+    String neuralNetResult = runPythonScript(artwork.image(), artworkId, Artist.getArtistIndex(artwork.artist()), baseFolderPath);
     // TODO: Add gpt4 api access
+    String imagePath = this.resizeImageForGPT4(artwork.image(), baseFolderPath, artworkId);
     String gptResult = "this is a test for the gpt result";
 
     ArtworkResultDto resultDto = new ArtworkResultDto(artworkId, neuralNetResult, gptResult);
@@ -69,12 +72,11 @@ public class ArtworkServiceImpl implements ArtworkService {
     return artworkMapper.entityToDto(artwork);
   }
 
-  private String runPythonScript(String image, Long artworkId, int artistIndex) {
+  private String runPythonScript(String image, Long artworkId, int artistIndex, String baseFolderPath) {
     String output = "";
     //TODO: change these paths if on different computer or trying to execute with different env
     String pythonScriptPath = "C:\\Users\\ptsef\\OneDrive\\Desktop\\BSC\\UserInterface\\template-java\\backend\\src\\main\\java\\artwork\\authenticator\\python\\authenticator.py";
     String condaEnvPath = "C:\\ProgramData\\miniconda3\\envs\\gcv_exercise_4";
-    String baseFolderPath = "C:/Users/ptsef/OneDrive/Desktop/BSC/UserInterface/template-java/backend/images";
 
     String condaActivateScript = "conda activate " + condaEnvPath;
     String pythonExecutable = condaEnvPath + "\\python";
@@ -106,7 +108,7 @@ public class ArtworkServiceImpl implements ArtworkService {
     return output;
   }
 
-  public String resizeImage(String base64Image, String baseFolderPath, Long id) {
+  private String resizeImage(String base64Image, String baseFolderPath, Long id) {
     try {
       base64Image = base64Image.substring(base64Image.indexOf(",") + 1);
 
@@ -135,5 +137,50 @@ public class ArtworkServiceImpl implements ArtworkService {
       LOG.error("Error resizing image " + e.getMessage());
     }
     return null;
+  }
+
+  private String resizeImageForGPT4(String base64Image, String baseFolderPath, Long id) {
+    String image = "";
+    try {
+      base64Image = base64Image.substring(base64Image.indexOf(",") + 1);
+      byte[] imageBytes = Base64.getDecoder().decode(base64Image);
+      ByteArrayInputStream bais = new ByteArrayInputStream(imageBytes);
+      BufferedImage originalImage = ImageIO.read(bais);
+
+      int width = originalImage.getWidth();
+      int height = originalImage.getHeight();
+      int maxPx = Math.max(width, height);
+
+      int newWidth;
+      int newHeight;
+      if (maxPx > 512) {
+        if (maxPx == width) {
+          newWidth = 512;
+          newHeight = (int)(height * (512./width));
+        } else {
+          newHeight = 512;
+          newWidth = (int)(width * (512./height));
+        }
+      } else {
+        newWidth = width;
+        newHeight = height;
+      }
+
+      // Resize Image
+      BufferedImage resizedImage = new BufferedImage(newWidth, newHeight, BufferedImage.TYPE_INT_RGB);
+      Graphics2D g = resizedImage.createGraphics();
+      g.drawImage(originalImage, 0, 0, newWidth, newHeight, null);
+      g.dispose();
+
+      // Save resized image to the specified file path
+      String outputPath = baseFolderPath + "/gptimg" + id + ".jpeg";
+      File outputFile = new File(outputPath);
+      ImageIO.write(resizedImage, "jpg", outputFile);
+
+      return outputPath;
+    } catch (IOException e) {
+      LOG.error("Error resizing image " + e.getMessage());
+    }
+    return image;
   }
 }
