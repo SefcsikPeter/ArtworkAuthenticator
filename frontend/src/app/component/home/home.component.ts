@@ -67,7 +67,7 @@ export class HomeComponent implements OnInit {
       this.artwork.price = this.artworkForm?.value.price;
     }
     if (this.artworkForm?.value.description) {
-      this.artwork.description = this.artworkForm?.value.description;
+      this.artwork.description = this.artworkForm?.value.description.replace(/\n/g, ' ');
     }
     if (typeof this.imageSrc === 'string') {
       this.artwork.image = this.imageSrc;
