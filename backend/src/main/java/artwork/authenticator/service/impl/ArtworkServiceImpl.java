@@ -220,7 +220,7 @@ public class ArtworkServiceImpl implements ArtworkService {
                 ]
               }
             ],
-            "max_tokens": 300
+            "max_tokens": 600
           }""", artwork.title(), artwork.artist(), artwork.gallery(), artwork.price(), artwork.description(), base64Image);
 
       HttpClient client = HttpClient.newHttpClient();
