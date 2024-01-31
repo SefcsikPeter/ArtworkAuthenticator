@@ -26,6 +26,7 @@ public class ArtworkResultJdbcDao implements ArtworkResultDao {
   private static final String SQL_CREATE = "INSERT INTO " + TABLE_NAME
       + " (artwork_id, neural_net_result, gpt_result) VALUES (?, ?, ?)";
   private static final String SQL_SELECT_BY_ID = "SELECT * FROM " + TABLE_NAME + " WHERE id = ?";
+  private static final String SQL_SELECT_ALL = "SELECT * FROM " + TABLE_NAME;
   private final JdbcTemplate jdbcTemplate;
 
   public ArtworkResultJdbcDao(JdbcTemplate jdbcTemplate) {
@@ -77,6 +78,14 @@ public class ArtworkResultJdbcDao implements ArtworkResultDao {
       throw new FatalException("There are more results with id %d than one".formatted(id));
     }
     return results.get(0);
+  }
+
+  @Override
+  public List<ArtworkResult> getAll() {
+    LOG.trace("getAll()");
+    List<ArtworkResult> results;
+    results = jdbcTemplate.query(SQL_SELECT_ALL, this::mapRow);
+    return results;
   }
 
   private ArtworkResult mapRow(ResultSet result, int rownum) throws SQLException {

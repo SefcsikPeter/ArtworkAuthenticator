@@ -11,6 +11,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.lang.invoke.MethodHandles;
+import java.util.List;
+import java.util.stream.Stream;
 
 @Component
 public class ArtworkResultServiceImpl implements ArtworkResultService {
@@ -27,5 +29,12 @@ public class ArtworkResultServiceImpl implements ArtworkResultService {
     LOG.trace("getById({})", id);
     ArtworkResult result = dao.getById(id);
     return mapper.entityToDto(result);
+  }
+
+  @Override
+  public Stream<ArtworkResultDto> getAll() {
+    LOG.trace("getAll()");
+    List<ArtworkResult> results = dao.getAll();
+    return results.stream().map(mapper::entityToDto);
   }
 }

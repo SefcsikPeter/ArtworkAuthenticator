@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.lang.invoke.MethodHandles;
+import java.util.stream.Stream;
 
 @RestController
 @RequestMapping(path = ResultEndpoint.BASE_PATH)
@@ -35,6 +36,12 @@ public class ResultEndpoint {
       logClientError(status, "Results with id %d not found".formatted(id), e);
       throw new ResponseStatusException(status, e.getMessage(), e);
     }
+  }
+
+  @GetMapping()
+  public Stream<ArtworkResultDto> getAll() {
+    LOG.info("GET " + BASE_PATH);
+    return service.getAll();
   }
 
   private void logClientError(HttpStatus status, String message, Exception e) {
