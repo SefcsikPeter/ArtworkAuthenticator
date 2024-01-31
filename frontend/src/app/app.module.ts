@@ -11,6 +11,7 @@ import {AppComponent} from './app.component';
 import {HeaderComponent} from './component/header/header.component';
 import { HomeComponent } from './component/home/home.component';
 import { ResultPageComponent } from './component/result-page/result-page.component';
+import { HistoryComponent } from './component/history/history.component';
 
 @NgModule({
   declarations: [
@@ -18,6 +19,7 @@ import { ResultPageComponent } from './component/result-page/result-page.compone
     HeaderComponent,
     HomeComponent,
     ResultPageComponent,
+    HistoryComponent,
   ],
     imports: [
         BrowserModule,
