@@ -1,1 +1,5 @@
-<p>history works!</p>
+<div class="card mt-1" *ngFor="let result of results">
+  <div class="card-body">
+    Title: {{result.artworkTitle}} Neural Net Result: {{result.neuralNetResult}} GPT-4 Result: {{result.gptResult}}
+  </div>
+</div>
