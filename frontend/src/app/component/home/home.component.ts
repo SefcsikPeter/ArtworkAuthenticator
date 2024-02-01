@@ -83,4 +83,7 @@ export class HomeComponent implements OnInit {
     });
   }
 
+  formatName(artist: string): string {
+    return artist.replace('_', ' ');
+  }
 }

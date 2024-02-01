@@ -87,4 +87,8 @@ export class ResultPageComponent implements OnInit {
       return str;
     }
   }
+
+  formatName(artist: Artist): string {
+    return ('' + artist).replace('_', ' ');
+  }
 }
