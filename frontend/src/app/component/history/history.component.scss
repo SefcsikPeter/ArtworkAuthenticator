@@ -1,0 +1,23 @@
+.card-body {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  text-align: left;
+  background-color: #BF40BF;
+  color: #fcf7fc;
+}
+
+.card {
+  border-color: #BF40BF;
+}
+
+.card-body > div {
+  flex: 1;
+  padding: 0 10px;
+}
+
+.txt {
+  text-align: center;
+  margin-top: 1%;
+  margin-bottom: 2%;
+}

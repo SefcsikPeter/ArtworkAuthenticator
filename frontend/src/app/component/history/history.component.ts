@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {ArtworkResultService} from '../../service/artwork-result.service';
 import {ResultList} from '../../dto/result-list';
+import {Artist} from "../../dto/artist";
 
 @Component({
   selector: 'app-history',
@@ -37,10 +38,15 @@ export class HistoryComponent implements OnInit {
   splitRating(rating: string): number {
     if (rating) {
       const probs = rating.split(', ');
-      return +probs[1];
+      return +probs[2];
     } else {
       return NaN;
     }
+  }
+
+  formatName(name: Artist): string {
+    const nameString = '' + name;
+    return nameString.replace('_', ' ');
   }
 
 }

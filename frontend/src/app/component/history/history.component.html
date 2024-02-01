@@ -1,5 +1,13 @@
-<div class="card mt-1" *ngFor="let result of results">
-  <div class="card-body" routerLink="/results/{{result.resultId}}">
-    Title: {{result.artworkTitle}} Neural Net Result: {{splitRating(result.neuralNetResult)}} GPT-4 Result: {{extractRating('Authenticity Rating: ', result.gptResult)}}
+<div class="col-12 txt">
+  <h1 class="display-4">Previous Results</h1>
+</div>
+
+<div class="card mt-2" *ngFor="let result of results">
+  <div class="card-body d-flex justify-content-between" routerLink="/results/{{result.resultId}}">
+    <div>Artist: {{formatName(result.artist)}}</div>
+    <div class="title">Title: {{result.artworkTitle}}</div>
+    <div class="neural-net">Neural Net Rating: {{splitRating(result.neuralNetResult)}}</div>
+    <div class="gpt-result">GPT-4 Rating: {{extractRating('Authenticity Rating: ', result.gptResult)}}</div>
   </div>
 </div>
+

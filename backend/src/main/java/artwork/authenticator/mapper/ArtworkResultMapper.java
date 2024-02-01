@@ -5,6 +5,7 @@ import artwork.authenticator.dto.ArtworkResultDto;
 import artwork.authenticator.dto.ResultListDto;
 import artwork.authenticator.entity.ArtworkResult;
 import artwork.authenticator.exception.FatalException;
+import artwork.authenticator.type.Artist;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -37,6 +38,7 @@ public class ArtworkResultMapper {
     return new ResultListDto(
         result.getId(),
         result.getArtworkId(),
+        getArtist(result, artworks),
         getTitle(result, artworks),
         result.getNeuralNetResult(),
         result.getGptResult()
@@ -54,5 +56,18 @@ public class ArtworkResultMapper {
       title = artworks.get(artworkId).title();
     }
     return title;
+  }
+
+  private Artist getArtist(ArtworkResult result, Map<Long, ArtworkDetailDto> artworks) {
+    LOG.trace("getArtist({}, {})", result, artworks);
+    Artist artist = null;
+    var artworkId = result.getArtworkId();
+    if (artworkId != null) {
+      if (!artworks.containsKey(artworkId)) {
+        throw new FatalException("Given owner map does not contain owner of this Horse (%d)".formatted(result.getId()));
+      }
+      artist = artworks.get(artworkId).artist();
+    }
+    return artist;
   }
 }
