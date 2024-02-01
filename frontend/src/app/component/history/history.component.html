@@ -1,5 +1,5 @@
 <div class="card mt-1" *ngFor="let result of results">
   <div class="card-body">
-    Title: {{result.artworkTitle}} Neural Net Result: {{result.neuralNetResult}} GPT-4 Result: {{result.gptResult}}
+    Title: {{result.artworkTitle}} Neural Net Result: {{splitRating(result.neuralNetResult)}} GPT-4 Result: {{extractRating('Authenticity Rating: ', result.gptResult)}}
   </div>
 </div>

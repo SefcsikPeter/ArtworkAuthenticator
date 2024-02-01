@@ -22,4 +22,24 @@ export class HistoryComponent implements OnInit {
     });
   }
 
+  extractRating(sequence: string, inputString: string): number {
+    const escapedSequence = sequence.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+    const pattern = new RegExp(escapedSequence + '([+-]?\\d*(\\.\\d+)?)(?!\\d)', 'g');
+    const match = pattern.exec(inputString);
+    if (match && match[1]) {
+      return parseFloat(match[1]);
+    } else {
+      return NaN;
+    }
+  }
+
+  splitRating(rating: string): number {
+    if (rating) {
+      const probs = rating.split(', ');
+      return +probs[1];
+    } else {
+      return NaN;
+    }
+  }
+
 }
