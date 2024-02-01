@@ -9,6 +9,7 @@ import artwork.authenticator.type.Artist;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
 
@@ -18,6 +19,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 @Repository
@@ -27,10 +30,13 @@ public class ArtworkJdbcDao implements ArtworkDao {
   private static final String SQL_CREATE = "INSERT INTO " + TABLE_NAME
       + " (title, artist, gallery, price, description, image) VALUES (?, ?, ?, ?, ?, ?)";
   private static final String SQL_SELECT_BY_ID = "SELECT * FROM " + TABLE_NAME + " WHERE id = ?";
+  private static final String SQL_SELECT_ALL_BY_ID = "SELECT * FROM " + TABLE_NAME + " WHERE id IN (:ids)";
   private final JdbcTemplate jdbcTemplate;
+  private final NamedParameterJdbcTemplate jdbcNamed;
 
-  public ArtworkJdbcDao(JdbcTemplate jdbcTemplate) {
+  public ArtworkJdbcDao(JdbcTemplate jdbcTemplate, NamedParameterJdbcTemplate jdbcNamed) {
     this.jdbcTemplate = jdbcTemplate;
+    this.jdbcNamed = jdbcNamed;
   }
 
   @Override
@@ -97,6 +103,13 @@ public class ArtworkJdbcDao implements ArtworkDao {
       throw new FatalException("Too many artworks with Id %d! found".formatted(id));
     }
     return artworks.get(0);
+  }
+
+  @Override
+  public Collection<Artwork> getAllById(Collection<Long> ids) {
+    LOG.trace("getAllById({})", ids);
+    var statementParams = Collections.singletonMap("ids", ids);
+    return jdbcNamed.query(SQL_SELECT_ALL_BY_ID, statementParams, this::mapRow);
   }
 
   private Artwork mapRow(ResultSet result, int rownum) throws SQLException {

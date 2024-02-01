@@ -3,6 +3,9 @@ package artwork.authenticator.service;
 import artwork.authenticator.dto.ArtworkDetailDto;
 import artwork.authenticator.exception.NotFoundException;
 
+import java.util.Collection;
+import java.util.Map;
+
 public interface ArtworkService {
 
   /**
@@ -15,4 +18,6 @@ public interface ArtworkService {
    * Returns {@code artwork} with the given id
    */
   ArtworkDetailDto getById(Long id) throws NotFoundException;
+
+  Map<Long, ArtworkDetailDto> getAllById(Collection<Long> ids) throws NotFoundException;
 }

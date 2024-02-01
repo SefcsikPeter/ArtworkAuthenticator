@@ -13,7 +13,6 @@ import artwork.authenticator.service.ArtworkService;
 import artwork.authenticator.type.Artist;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.util.JSONPObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -33,6 +32,10 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.Base64;
+import java.util.Collection;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 public class ArtworkServiceImpl implements ArtworkService {
@@ -77,6 +80,21 @@ public class ArtworkServiceImpl implements ArtworkService {
     LOG.trace("getById({})", id);
     Artwork artwork = artworkDao.getById(id);
     return artworkMapper.entityToDto(artwork);
+  }
+
+  @Override
+  public Map<Long, ArtworkDetailDto> getAllById(Collection<Long> ids) throws NotFoundException {
+    LOG.trace("getAllById({})", ids);
+    Map<Long, ArtworkDetailDto> artworks =
+        artworkDao.getAllById(ids).stream()
+            .map(artworkMapper::entityToDto)
+            .collect(Collectors.toUnmodifiableMap(ArtworkDetailDto::id, Function.identity()));
+    for (final var id : ids) {
+      if (!artworks.containsKey(id)) {
+        throw new NotFoundException("Artwork with ID %d not found".formatted(id));
+      }
+    }
+    return artworks;
   }
 
   private String runPythonScript(String image, Long artworkId, int artistIndex, String baseFolderPath) {

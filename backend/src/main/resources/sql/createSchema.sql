@@ -44,7 +44,7 @@ CREATE TABLE IF NOT EXISTS artwork
         'Rembrandt',
         'Salvador_Dali',
         'Vincent_van_Gogh',
-        'Alfons_Walde'),
+        'Alfons_Walde') NOT NULL,
     gallery VARCHAR(1023),
     price VARCHAR(255),
     description VARCHAR(4095),

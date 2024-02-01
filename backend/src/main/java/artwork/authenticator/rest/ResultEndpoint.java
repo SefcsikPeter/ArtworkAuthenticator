@@ -1,6 +1,7 @@
 package artwork.authenticator.rest;
 
 import artwork.authenticator.dto.ArtworkResultDto;
+import artwork.authenticator.dto.ResultListDto;
 import artwork.authenticator.exception.NotFoundException;
 import artwork.authenticator.service.ArtworkResultService;
 import org.slf4j.Logger;
@@ -39,7 +40,7 @@ public class ResultEndpoint {
   }
 
   @GetMapping()
-  public Stream<ArtworkResultDto> getAll() {
+  public Stream<ResultListDto> getAll() {
     LOG.info("GET " + BASE_PATH);
     return service.getAll();
   }
