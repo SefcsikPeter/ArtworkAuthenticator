@@ -45,8 +45,22 @@ export class HistoryComponent implements OnInit {
   }
 
   formatName(name: Artist): string {
-    const nameString = '' + name;
-    return nameString.replace('_', ' ');
+    return ('' + name).replace('_', ' ');
   }
 
+  formatResult(result: number): string {
+    if (isNaN(result)) {
+      return 'No value given';
+    } else {
+      return '' + result;
+    }
+  }
+
+  formatTitle(title: string): string {
+    if (title) {
+      return title;
+    } else {
+      return 'No Title Given';
+    }
+  }
 }

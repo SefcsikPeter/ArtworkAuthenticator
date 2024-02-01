@@ -5,9 +5,9 @@
 <div class="card mt-2" *ngFor="let result of results">
   <div class="card-body d-flex justify-content-between" routerLink="/results/{{result.resultId}}">
     <div>Artist: {{formatName(result.artist)}}</div>
-    <div class="title">Title: {{result.artworkTitle}}</div>
-    <div class="neural-net">Neural Net Rating: {{splitRating(result.neuralNetResult)}}</div>
-    <div class="gpt-result">GPT-4 Rating: {{extractRating('Authenticity Rating: ', result.gptResult)}}</div>
+    <div class="title">Title: {{formatTitle(result.artworkTitle)}}</div>
+    <div class="neural-net">Neural Net Rating: {{formatResult(splitRating(result.neuralNetResult))}}</div>
+    <div class="gpt-result">GPT-4 Rating: {{formatResult(extractRating('Authenticity Rating: ', result.gptResult))}}</div>
   </div>
 </div>
 
