@@ -17,6 +17,7 @@ export class HistoryComponent implements OnInit {
     this.service.getAll().subscribe({
       next: data => {
         this.results = data;
+        this.results.reverse();
         console.log(data);
       }
     });
