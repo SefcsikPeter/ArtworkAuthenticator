@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.stereotype.Repository;
 
 import java.lang.invoke.MethodHandles;
 import java.sql.PreparedStatement;
@@ -17,6 +18,7 @@ import java.sql.Statement;
 import java.sql.Types;
 import java.util.List;
 
+@Repository
 public class MessageJdbcDao implements MessageDao {
   private static final String TABLE_NAME = "message";
   private static final String SQL_CREATE = "INSERT INTO " + TABLE_NAME

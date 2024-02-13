@@ -1,9 +1,11 @@
 package artwork.authenticator.rest;
 
 import artwork.authenticator.dto.ArtworkResultDto;
+import artwork.authenticator.dto.MessageListDto;
 import artwork.authenticator.dto.ResultListDto;
 import artwork.authenticator.exception.NotFoundException;
 import artwork.authenticator.service.ArtworkResultService;
+import artwork.authenticator.service.MessageService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -22,9 +24,11 @@ public class ResultEndpoint {
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
   public static final String BASE_PATH = "/results";
   private final ArtworkResultService service;
+  private final MessageService messageService;
 
-  public ResultEndpoint(ArtworkResultService service) {
+  public ResultEndpoint(ArtworkResultService service, MessageService messageService) {
     this.service = service;
+    this.messageService = messageService;
   }
 
   @GetMapping("{id}")
@@ -43,6 +47,12 @@ public class ResultEndpoint {
   public Stream<ResultListDto> getAll() {
     LOG.info("GET " + BASE_PATH);
     return service.getAll();
+  }
+
+  @GetMapping("/{id}/messages")
+  public Stream<MessageListDto> getAllMessagesByArtworkId(@PathVariable("id") Long id) {
+    LOG.info("GET " + BASE_PATH + "/" + id + "/messages");
+    return messageService.getAllByResultId(id);
   }
 
   private void logClientError(HttpStatus status, String message, Exception e) {

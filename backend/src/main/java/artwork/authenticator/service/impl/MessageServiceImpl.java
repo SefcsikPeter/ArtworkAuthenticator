@@ -2,6 +2,7 @@ package artwork.authenticator.service.impl;
 
 import artwork.authenticator.dto.MessageDto;
 import artwork.authenticator.dto.MessageListDto;
+import artwork.authenticator.dto.UserMessageDto;
 import artwork.authenticator.entity.Artwork;
 import artwork.authenticator.entity.ArtworkResult;
 import artwork.authenticator.entity.Message;
@@ -15,6 +16,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
@@ -25,6 +27,7 @@ import java.net.http.HttpResponse;
 import java.util.List;
 import java.util.stream.Stream;
 
+@Service
 public class MessageServiceImpl implements MessageService {
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
   private final MessageDao dao;
@@ -46,16 +49,16 @@ public class MessageServiceImpl implements MessageService {
   }
 
   @Override
-  public void create(Long resultId, String userMessage) throws NotFoundException {
-    LOG.trace("create({}, {})", resultId, userMessage);
+  public void create(UserMessageDto message) throws NotFoundException {
+    LOG.trace("create({})", message);
 
-    ArtworkResult result = resultDao.getById(resultId);
+    ArtworkResult result = resultDao.getById(message.resultId());
     Artwork artwork = artworkDao.getById(result.getArtworkId());
-    List<Message> messages = dao.getAllByResultId(resultId);
+    List<Message> messages = dao.getAllByResultId(message.resultId());
 
     String gptResponse = feedbackRequestToGPT4(artwork, result, messages);
 
-    dao.create(new MessageDto(resultId, userMessage, gptResponse));
+    dao.create(new MessageDto(message.resultId(), message.userMessage(), gptResponse));
   }
 
   private String feedbackRequestToGPT4(Artwork artwork, ArtworkResult result, List<Message> messages) {
