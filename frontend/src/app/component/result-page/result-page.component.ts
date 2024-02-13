@@ -5,6 +5,7 @@ import {ActivatedRoute} from '@angular/router';
 import {ArtworkService} from '../../service/artwork.service';
 import {Artwork} from '../../dto/artwork';
 import {Artist} from '../../dto/artist';
+import {FormControl, FormGroup} from '@angular/forms';
 
 @Component({
   selector: 'app-result-page',
@@ -19,6 +20,8 @@ export class ResultPageComponent implements OnInit {
   selectedArtistProb = '';
   top1Artist = '';
   top1ArtistProb = '';
+  feedback: FormGroup | undefined;
+  messagePairs: any[][] = [];
   constructor(
     private resultService: ArtworkResultService,
     private artworkService: ArtworkService,
@@ -27,6 +30,9 @@ export class ResultPageComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadData();
+    this.feedback = new FormGroup({
+      text: new FormControl()
+    });
   }
 
   loadData(): void {
@@ -90,5 +96,12 @@ export class ResultPageComponent implements OnInit {
 
   formatName(artist: Artist): string {
     return ('' + artist).replace('_', ' ');
+  }
+
+  sendFeedback() {
+    if (this.feedback?.value.text) {
+      this.messagePairs.push([this.feedback.value.text, 'This would be a dummy response']);
+      console.log(this.messagePairs);
+    }
   }
 }
