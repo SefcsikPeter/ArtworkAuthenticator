@@ -40,3 +40,12 @@ CREATE TABLE IF NOT EXISTS artwork_result
     neural_net_result VARCHAR(4095),
     gpt_result LONGTEXT
 )
+
+CREATE TABLE IF NOT EXISTS message
+(
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    result_id BIGINT NOT NULL,
+    t TIMESTAMP,
+    user_message LONGTEXT,
+    gpt_response LONGTEXT
+)
