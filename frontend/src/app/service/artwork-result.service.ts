@@ -3,6 +3,7 @@ import {environment} from '../../environments/environment';
 import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {ResultList} from '../dto/result-list';
+import {MessageList} from '../dto/message-list';
 
 const baseUri = environment.backendUrl + '/results';
 @Injectable({
@@ -20,5 +21,9 @@ export class ArtworkResultService {
 
   getAll(): Observable<ResultList[]> {
     return this.http.get<ResultList[]>(baseUri);
+  }
+
+  getAllMessagesByResultId(id: number): Observable<MessageList[]> {
+    return this.http.get<MessageList[]>(baseUri + '/' + id + '/' + 'messages');
   }
 }

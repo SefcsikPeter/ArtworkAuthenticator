@@ -50,7 +50,7 @@ public class ResultEndpoint {
   }
 
   @GetMapping("/{id}/messages")
-  public Stream<MessageListDto> getAllMessagesByArtworkId(@PathVariable("id") Long id) {
+  public Stream<MessageListDto> getAllMessagesByResultId(@PathVariable("id") Long id) {
     LOG.info("GET " + BASE_PATH + "/" + id + "/messages");
     return messageService.getAllByResultId(id);
   }

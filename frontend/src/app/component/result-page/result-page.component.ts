@@ -8,6 +8,7 @@ import {Artist} from '../../dto/artist';
 import {FormControl, FormGroup} from '@angular/forms';
 import {MessageService} from '../../service/message.service';
 import {UserMessage} from '../../dto/user-message';
+import {MessageList} from '../../dto/message-list';
 
 @Component({
   selector: 'app-result-page',
@@ -24,7 +25,7 @@ export class ResultPageComponent implements OnInit {
   top1Artist = '';
   top1ArtistProb = '';
   feedback: FormGroup | undefined;
-  messagePairs: any[][] = [];
+  messagePairs: MessageList[] = [];
   constructor(
     private resultService: ArtworkResultService,
     private artworkService: ArtworkService,
@@ -53,6 +54,12 @@ export class ResultPageComponent implements OnInit {
         },
         error: err => {
           console.error(err);
+        }
+      });
+      this.resultService.getAllMessagesByResultId(+id).subscribe({
+        next: messages => {
+          console.log(messages);
+          this.messagePairs = messages;
         }
       });
     }
@@ -109,7 +116,8 @@ export class ResultPageComponent implements OnInit {
       const userMessage: UserMessage = {resultId: this.resultId, userMessage: this.feedback.value.text};
       this.messageService.create(userMessage).subscribe({
         next: response => {
-          this.messagePairs.push([this.feedback?.value.text, response.response]);
+          const messagePair: MessageList = {userMessage: this.feedback?.value.text, gptResponse: response.response};
+          this.messagePairs.push(messagePair);
           console.log(response);
         },
         error: err => {
