@@ -6,8 +6,8 @@ import {ArtworkService} from '../../service/artwork.service';
 import {Artwork} from '../../dto/artwork';
 import {Artist} from '../../dto/artist';
 import {FormControl, FormGroup} from '@angular/forms';
-import {MessageService} from "../../service/message.service";
-import {UserMessage} from "../../dto/user-message";
+import {MessageService} from '../../service/message.service';
+import {UserMessage} from '../../dto/user-message';
 
 @Component({
   selector: 'app-result-page',
