@@ -36,7 +36,7 @@ export class ResultPageComponent implements OnInit {
   ngOnInit(): void {
     this.loadData();
     this.feedback = new FormGroup({
-      text: new FormControl()
+      text: new FormControl('')
     });
   }
 
@@ -118,6 +118,9 @@ export class ResultPageComponent implements OnInit {
         next: response => {
           const messagePair: MessageList = {userMessage: this.feedback?.value.text, gptResponse: response.response};
           this.messagePairs.push(messagePair);
+          if(this.feedback) {
+            this.feedback.reset();
+          }
           console.log(response);
         },
         error: err => {
