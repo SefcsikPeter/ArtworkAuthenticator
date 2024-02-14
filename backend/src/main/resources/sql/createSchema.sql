@@ -39,7 +39,7 @@ CREATE TABLE IF NOT EXISTS artwork_result
     artwork_id BIGINT NOT NULL,
     neural_net_result VARCHAR(4095),
     gpt_result LONGTEXT
-)
+);
 
 CREATE TABLE IF NOT EXISTS message
 (
@@ -48,4 +48,4 @@ CREATE TABLE IF NOT EXISTS message
     t TIMESTAMP,
     user_message LONGTEXT,
     gpt_response LONGTEXT
-)
+);

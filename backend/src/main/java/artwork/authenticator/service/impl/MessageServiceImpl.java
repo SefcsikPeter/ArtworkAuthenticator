@@ -95,6 +95,7 @@ public class MessageServiceImpl implements MessageService {
                 {
                 "type": "text",
                 "text": "%s"
+              }
               ]
               }
               """,
@@ -103,8 +104,8 @@ public class MessageServiceImpl implements MessageService {
           artwork.getGallery(),
           artwork.getPrice(),
           artwork.getDescription(),
-          artwork.getImage(),
-          result.getGptResult());
+          "imagereplacement",
+          result.getGptResult().replace('\n', ' '));
       if (!messages.isEmpty()) {
         for (Message message : messages) {
           jsonPayload = appendUserMessageAndGptResponse(jsonPayload, message);
@@ -149,7 +150,6 @@ public class MessageServiceImpl implements MessageService {
   }
 
   private String appendJsonEnding(String jsonPayload) {
-    jsonPayload += "\n";
     jsonPayload += "  ],\n";
     jsonPayload += "  \"max_tokens\": 600\n";
     jsonPayload += "}\n";
@@ -173,7 +173,7 @@ public class MessageServiceImpl implements MessageService {
     jsonPayload += "        \"type\": \"text\",\n";
     jsonPayload += "        \"text\": \"" + message.getGptResponse() + "\"\n";
     jsonPayload += "    ]\n";
-    jsonPayload += "    },\n";
+    jsonPayload += "    },";
 
     return jsonPayload;
   }

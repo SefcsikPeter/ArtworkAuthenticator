@@ -6,6 +6,7 @@ import artwork.authenticator.service.MessageService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,11 +27,12 @@ public class MessageEndpoint {
   }
 
   @PostMapping
-  public void create(@RequestBody UserMessageDto userMessage) {
+  public ResponseEntity<?> create(@RequestBody UserMessageDto userMessage) {
     LOG.trace("create({})", userMessage);
 
     try {
       service.create(userMessage);
+      return ResponseEntity.status(HttpStatus.CREATED).build();
     } catch (NotFoundException e) {
       HttpStatus status = HttpStatus.NOT_FOUND;
       logClientError(status, "Result with id %d not found".formatted(userMessage.resultId()), e);

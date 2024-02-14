@@ -77,6 +77,6 @@ public class MessageJdbcDao implements MessageDao {
         .setId(result.getLong("id"))
         .setResultId(result.getLong("result_id"))
         .setUserMessage(result.getString("user_message"))
-        .setGptResponse(result.getString("gpt_message"));
+        .setGptResponse(result.getString("gpt_response"));
   }
 }
