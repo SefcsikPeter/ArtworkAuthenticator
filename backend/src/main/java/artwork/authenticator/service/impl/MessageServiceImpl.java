@@ -1,5 +1,6 @@
 package artwork.authenticator.service.impl;
 
+import artwork.authenticator.dto.GPTResponseDto;
 import artwork.authenticator.dto.MessageDto;
 import artwork.authenticator.dto.MessageListDto;
 import artwork.authenticator.dto.UserMessageDto;
@@ -49,19 +50,20 @@ public class MessageServiceImpl implements MessageService {
   }
 
   @Override
-  public void create(UserMessageDto message) throws NotFoundException {
+  public GPTResponseDto create(UserMessageDto message) throws NotFoundException {
     LOG.trace("create({})", message);
 
     ArtworkResult result = resultDao.getById(message.resultId());
     Artwork artwork = artworkDao.getById(result.getArtworkId());
     List<Message> messages = dao.getAllByResultId(message.resultId());
 
-    String gptResponse = feedbackRequestToGPT4(artwork, result, messages);
+    String gptResponse = feedbackRequestToGPT4(artwork, result, messages, message.userMessage());
 
     dao.create(new MessageDto(message.resultId(), message.userMessage(), gptResponse));
+    return new GPTResponseDto(gptResponse);
   }
 
-  private String feedbackRequestToGPT4(Artwork artwork, ArtworkResult result, List<Message> messages) {
+  private String feedbackRequestToGPT4(Artwork artwork, ArtworkResult result, List<Message> messages, String userMessage) {
     String gptResponse = "";
     try {
       String apiKey = "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";
@@ -97,23 +99,22 @@ public class MessageServiceImpl implements MessageService {
                 "text": "%s"
               }
               ]
-              }
+              },
               """,
           artwork.getTitle(),
           artwork.getArtist(),
           artwork.getGallery(),
           artwork.getPrice(),
           artwork.getDescription(),
-          "imagereplacement",
+          artwork.getImage(),
           result.getGptResult().replace('\n', ' '));
       if (!messages.isEmpty()) {
         for (Message message : messages) {
           jsonPayload = appendUserMessageAndGptResponse(jsonPayload, message);
         }
       }
+      jsonPayload = appendNewMessage(jsonPayload, userMessage);
       jsonPayload = appendJsonEnding(jsonPayload);
-
-      System.out.println(jsonPayload);
 
       HttpClient client = HttpClient.newHttpClient();
       HttpRequest request = HttpRequest.newBuilder()
@@ -157,24 +158,39 @@ public class MessageServiceImpl implements MessageService {
   }
 
   private String appendUserMessageAndGptResponse(String jsonPayload, Message message) {
-    jsonPayload += ",\n";
     jsonPayload += "    {\n";
     jsonPayload += "      \"role\": \"user\",\n";
     jsonPayload += "      \"content\": [\n";
+    jsonPayload += "      {";
     jsonPayload += "        \"type\": \"text\",\n";
-    jsonPayload += "        \"text\": \"" + message.getUserMessage() + "\"\n";
+    jsonPayload += "        \"text\": \"" + message.getUserMessage().replace('\n', ' ') + "\"\n";
+    jsonPayload += "      }";
     jsonPayload += "    ]\n";
     jsonPayload += "    },\n";
 
-    jsonPayload += ",\n";
     jsonPayload += "    {\n";
     jsonPayload += "      \"role\": \"assistant\",\n";
     jsonPayload += "      \"content\": [\n";
+    jsonPayload += "      {";
     jsonPayload += "        \"type\": \"text\",\n";
-    jsonPayload += "        \"text\": \"" + message.getGptResponse() + "\"\n";
+    jsonPayload += "        \"text\": \"" + message.getGptResponse().replace('\n', ' ') + "\"\n";
+    jsonPayload += "       }";
     jsonPayload += "    ]\n";
-    jsonPayload += "    },";
+    jsonPayload += "    },\n";
 
+    return jsonPayload;
+  }
+
+  private String appendNewMessage(String jsonPayload, String userMessage) {
+    jsonPayload += "  {\n";
+    jsonPayload += "  \"role\": \"user\",\n";
+    jsonPayload += "  \"content\": [\n";
+    jsonPayload += "    {\n";
+    jsonPayload += "      \"type\": \"text\",\n";
+    jsonPayload += "      \"text\": \"" + userMessage.replace('\n', ' ') + "\"\n";
+    jsonPayload += "    }\n";
+    jsonPayload += "  ]\n";
+    jsonPayload += "  }\n";
     return jsonPayload;
   }
 }

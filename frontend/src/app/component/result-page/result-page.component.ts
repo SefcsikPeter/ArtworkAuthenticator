@@ -6,6 +6,8 @@ import {ArtworkService} from '../../service/artwork.service';
 import {Artwork} from '../../dto/artwork';
 import {Artist} from '../../dto/artist';
 import {FormControl, FormGroup} from '@angular/forms';
+import {MessageService} from "../../service/message.service";
+import {UserMessage} from "../../dto/user-message";
 
 @Component({
   selector: 'app-result-page',
@@ -14,6 +16,7 @@ import {FormControl, FormGroup} from '@angular/forms';
 })
 export class ResultPageComponent implements OnInit {
   result: ArtworkResult = {};
+  resultId = -1;
   artwork: Artwork = {};
   artists = Object.values(Artist);
   selectedArtist = '';
@@ -25,6 +28,7 @@ export class ResultPageComponent implements OnInit {
   constructor(
     private resultService: ArtworkResultService,
     private artworkService: ArtworkService,
+    private messageService: MessageService,
     private route: ActivatedRoute
   ) { }
 
@@ -38,6 +42,7 @@ export class ResultPageComponent implements OnInit {
   loadData(): void {
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
+      this.resultId = +id;
       this.resultService.getById(+id).subscribe({
         next: data => {
           console.log('loaded result', data);
@@ -100,8 +105,17 @@ export class ResultPageComponent implements OnInit {
 
   sendFeedback() {
     if (this.feedback?.value.text) {
-      this.messagePairs.push([this.feedback.value.text, 'This would be a dummy response']);
       console.log(this.messagePairs);
+      const userMessage: UserMessage = {resultId: this.resultId, userMessage: this.feedback.value.text};
+      this.messageService.create(userMessage).subscribe({
+        next: response => {
+          this.messagePairs.push([this.feedback?.value.text, response.response]);
+          console.log(response);
+        },
+        error: err => {
+          console.log(err);
+        }
+      });
     }
   }
 }

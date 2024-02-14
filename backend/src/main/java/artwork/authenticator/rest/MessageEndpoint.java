@@ -1,5 +1,6 @@
 package artwork.authenticator.rest;
 
+import artwork.authenticator.dto.GPTResponseDto;
 import artwork.authenticator.dto.UserMessageDto;
 import artwork.authenticator.exception.NotFoundException;
 import artwork.authenticator.service.MessageService;
@@ -27,12 +28,11 @@ public class MessageEndpoint {
   }
 
   @PostMapping
-  public ResponseEntity<?> create(@RequestBody UserMessageDto userMessage) {
+  public GPTResponseDto create(@RequestBody UserMessageDto userMessage) {
     LOG.trace("create({})", userMessage);
-
+    LOG.error(userMessage.userMessage());
     try {
-      service.create(userMessage);
-      return ResponseEntity.status(HttpStatus.CREATED).build();
+      return service.create(userMessage);
     } catch (NotFoundException e) {
       HttpStatus status = HttpStatus.NOT_FOUND;
       logClientError(status, "Result with id %d not found".formatted(userMessage.resultId()), e);
