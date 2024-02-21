@@ -6,7 +6,6 @@ import artwork.authenticator.entity.Artwork;
 import artwork.authenticator.entity.ArtworkResult;
 import artwork.authenticator.exception.NotFoundException;
 import artwork.authenticator.mapper.ArtworkMapper;
-import artwork.authenticator.mapper.ArtworkResultMapper;
 import artwork.authenticator.persistence.ArtworkDao;
 import artwork.authenticator.persistence.ArtworkResultDao;
 import artwork.authenticator.service.ArtworkService;
@@ -17,13 +16,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import javax.imageio.ImageIO;
-import java.awt.Graphics2D;
-import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.invoke.MethodHandles;
@@ -42,17 +37,14 @@ public class ArtworkServiceImpl implements ArtworkService {
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
   private final ArtworkDao artworkDao;
   private final ArtworkResultDao artworkResultDao;
-  private final ArtworkResultMapper artworkResultMapper;
   private final ArtworkMapper artworkMapper;
 
   public ArtworkServiceImpl(
       ArtworkDao artworkDao,
       ArtworkResultDao artworkResultDao,
-      ArtworkResultMapper artworkResultMapper,
       ArtworkMapper artworkMapper) {
     this.artworkDao = artworkDao;
     this.artworkResultDao = artworkResultDao;
-    this.artworkResultMapper = artworkResultMapper;
     this.artworkMapper = artworkMapper;
   }
 
@@ -66,8 +58,8 @@ public class ArtworkServiceImpl implements ArtworkService {
 
     Long artworkId = analysedArtwork.getId();
     String neuralNetResult = runPythonScript(artwork.image(), artworkId, Artist.getArtistIndex(artwork.artist()), baseFolderPath);
-    String base64image = resizeImageForGPT4(artwork.image());
-    String gptResult = imageAnalysisRequestToGPT4(base64image, artwork);
+    String gptResult = imageAnalysisRequestToGPT4(artwork.image(), artwork);
+    System.out.println(artwork.image());
 
     ArtworkResultDto resultDto = new ArtworkResultDto(artworkId, neuralNetResult, gptResult);
     ArtworkResult result = artworkResultDao.create(resultDto);
@@ -107,7 +99,7 @@ public class ArtworkServiceImpl implements ArtworkService {
     String pythonExecutable = condaEnvPath + "\\python";
 
     try {
-      String imagePath = resizeImage(image, baseFolderPath, artworkId);
+      String imagePath = saveImage(image, baseFolderPath, artworkId);
       ProcessBuilder pb =
           new ProcessBuilder("cmd", "/c", condaActivateScript, "&&", pythonExecutable, pythonScriptPath, imagePath, "" + artistIndex);
       Process p = pb.start();
@@ -133,80 +125,33 @@ public class ArtworkServiceImpl implements ArtworkService {
     return output;
   }
 
-  private String resizeImage(String base64Image, String baseFolderPath, Long id) {
+  public String saveImage(String base64Image, String baseFolderPath, Long id) {
     try {
-      base64Image = base64Image.substring(base64Image.indexOf(",") + 1);
+      // Remove data URL prefix if present
+      if (base64Image.contains(",")) {
+        base64Image = base64Image.substring(base64Image.indexOf(",") + 1);
+      }
 
       // Decode Base64 to byte array
       byte[] imageBytes = Base64.getDecoder().decode(base64Image);
 
-      // Convert byte array to BufferedImage
-      ByteArrayInputStream bais = new ByteArrayInputStream(imageBytes);
-      BufferedImage originalImage = ImageIO.read(bais);
-
-      // Resize Image
-      int newWidth = 128; // desired width
-      int newHeight = 128; // desired height
-      BufferedImage resizedImage = new BufferedImage(newWidth, newHeight, BufferedImage.TYPE_INT_RGB);
-      Graphics2D g = resizedImage.createGraphics();
-      g.drawImage(originalImage, 0, 0, newWidth, newHeight, null);
-      g.dispose();
-
-      // Save resized image to the specified file path
-      String outputPath = baseFolderPath + "/img" + id + ".jpeg";
+      // Define the output path for the image file
+      String outputPath = baseFolderPath + "/img" + id + ".jpg";
       File outputFile = new File(outputPath);
-      ImageIO.write(resizedImage, "jpg", outputFile);
+
+      // Ensure the directory exists
+      outputFile.getParentFile().mkdirs();
+
+      // Write the bytes directly to a file as a JPEG image
+      try (FileOutputStream fos = new FileOutputStream(outputFile)) {
+        fos.write(imageBytes);
+      }
 
       return outputPath;
     } catch (IOException e) {
-      LOG.error("Error resizing image " + e.getMessage());
+      System.err.println("Error saving image: " + e.getMessage());
+      return null;
     }
-    return null;
-  }
-  private String resizeImageForGPT4(String base64Image) {
-    String resizedBase64Image = "";
-    try {
-      base64Image = base64Image.substring(base64Image.indexOf(",") + 1);
-      byte[] imageBytes = Base64.getDecoder().decode(base64Image);
-      ByteArrayInputStream bais = new ByteArrayInputStream(imageBytes);
-      BufferedImage originalImage = ImageIO.read(bais);
-
-      int width = originalImage.getWidth();
-      int height = originalImage.getHeight();
-      int maxPx = Math.max(width, height);
-
-      int newWidth;
-      int newHeight;
-      if (maxPx > 512) {
-        if (maxPx == width) {
-          newWidth = 512;
-          newHeight = (int)(height * (512./width));
-        } else {
-          newHeight = 512;
-          newWidth = (int)(width * (512./height));
-        }
-      } else {
-        newWidth = width;
-        newHeight = height;
-      }
-
-      // Resize Image
-      BufferedImage resizedImage = new BufferedImage(newWidth, newHeight, BufferedImage.TYPE_INT_RGB);
-      Graphics2D g = resizedImage.createGraphics();
-      g.drawImage(originalImage, 0, 0, newWidth, newHeight, null);
-      g.dispose();
-
-      // Convert image back into base64 format
-      ByteArrayOutputStream baos = new ByteArrayOutputStream();
-      ImageIO.write(resizedImage, "jpg", baos);
-      byte[] resizedBytes = baos.toByteArray();
-      resizedBase64Image = Base64.getEncoder().encodeToString(resizedBytes);
-
-      return resizedBase64Image;
-    } catch (IOException e) {
-      LOG.error("Error resizing image " + e.getMessage());
-    }
-    return resizedBase64Image;
   }
 
   private String imageAnalysisRequestToGPT4(String base64Image, ArtworkDetailDto artwork) {
@@ -231,7 +176,7 @@ public class ArtworkServiceImpl implements ArtworkService {
                   {
                     "type": "image_url",
                     "image_url": {
-                      "url": "data:image/jpeg;base64,%s",
+                      "url": "%s",
                       "detail": "low"
                     }
                   }
