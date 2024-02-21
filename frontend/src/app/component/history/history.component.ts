@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {ArtworkResultService} from '../../service/artwork-result.service';
 import {ResultList} from '../../dto/result-list';
-import {Artist} from "../../dto/artist";
+import {Artist} from '../../dto/artist';
 
 @Component({
   selector: 'app-history',
@@ -52,7 +52,17 @@ export class HistoryComponent implements OnInit {
     if (isNaN(result)) {
       return 'No value given';
     } else {
-      return '' + result;
+      const r = result*100;
+      let str;
+      if (r < 1) {
+        str = '' + 0 + '%';
+      } else {
+        str = '' + r + '%';
+        if (str.length > 4) {
+          str = str.substring(0, 4) + '%';
+        }
+      }
+      return str;
     }
   }
 
