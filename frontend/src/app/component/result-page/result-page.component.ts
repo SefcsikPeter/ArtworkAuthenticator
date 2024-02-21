@@ -85,7 +85,7 @@ export class ResultPageComponent implements OnInit {
       this.top1Artist = this.artists[+artistProbabilities[0]];
       this.top1ArtistProb = '' + +this.truncateString(artistProbabilities[1], 6)*100;
       console.log(artistProbabilities[1], artistProbabilities[2]);
-      this.selectedArtistProb = '' + +this.truncateString(artistProbabilities[2], 6)*100;
+      this.selectedArtistProb = this.truncateString('' + +this.truncateString(artistProbabilities[2], 6)*100, 4);
     }
   }
 
