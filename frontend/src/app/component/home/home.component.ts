@@ -4,6 +4,7 @@ import {FormGroup, FormControl} from '@angular/forms';
 import {ArtworkService} from '../../service/artwork.service';
 import {Artwork} from '../../dto/artwork';
 import {Router} from '@angular/router';
+import {ToastrService} from 'ngx-toastr';
 
 @Component({
   selector: 'app-home',
@@ -20,7 +21,8 @@ export class HomeComponent implements OnInit {
 
   constructor(
     private service: ArtworkService,
-    private router: Router
+    private router: Router,
+    private notification: ToastrService
   ) { }
 
   ngOnInit(): void {
@@ -59,6 +61,13 @@ export class HomeComponent implements OnInit {
     }
     if (this.artworkForm?.value.artist) {
       this.artwork.artist = this.artworkForm?.value.artist;
+    } else {
+      this.notification.success('', 'Please select an artist name!',
+        {
+          toastClass: 'user-info',
+          positionClass: 'custom-toast-center'
+        });
+      return;
     }
     if (this.artworkForm?.value.gallery) {
       this.artwork.gallery = this.artworkForm?.value.gallery;
@@ -72,6 +81,11 @@ export class HomeComponent implements OnInit {
     if (typeof this.imageSrc === 'string') {
       this.artwork.image = this.imageSrc;
     }
+    this.notification.success('', 'The entered information has been submitted, please wait for the results',
+      {
+        toastClass: 'user-info',
+        positionClass: 'custom-toast-center'
+      });
     this.service.analyse(this.artwork).subscribe({
       next: data => {
         console.log('passed to service', data);
@@ -79,6 +93,11 @@ export class HomeComponent implements OnInit {
       },
       error: error => {
         console.error('Error analysing artwork', error);
+        this.notification.success('', 'There has been an error processing your request',
+          {
+            toastClass: 'user-info',
+            positionClass: 'custom-toast-center'
+          });
       }
     });
   }
