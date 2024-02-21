@@ -59,7 +59,6 @@ public class ArtworkServiceImpl implements ArtworkService {
     Long artworkId = analysedArtwork.getId();
     String neuralNetResult = runPythonScript(artwork.image(), artworkId, Artist.getArtistIndex(artwork.artist()), baseFolderPath);
     String gptResult = imageAnalysisRequestToGPT4(artwork.image(), artwork);
-    System.out.println(artwork.image());
 
     ArtworkResultDto resultDto = new ArtworkResultDto(artworkId, neuralNetResult, gptResult);
     ArtworkResult result = artworkResultDao.create(resultDto);
@@ -190,7 +189,7 @@ public class ArtworkServiceImpl implements ArtworkService {
       HttpRequest request = HttpRequest.newBuilder()
           .uri(URI.create("https://api.openai.com/v1/chat/completions"))
           .header("Content-Type", "application/json")
-          .header("Authorization", "Bearer " + apiKey)
+          .header("Authorization", "Bearer " + "apiKey")
           .POST(HttpRequest.BodyPublishers.ofString(jsonPayload))
           .build();
 
