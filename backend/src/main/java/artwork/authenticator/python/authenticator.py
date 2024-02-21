@@ -57,6 +57,8 @@ else:
 if image_path != '':
     image = read_image(image_path)
     pil_image = to_pil(image)
+    if (pil_image.mode != 'RGB'):
+        pil_image = pil_image.convert('RGB')
     transformed_image = test_transforms(pil_image)
 
 # Ensure the transformed image tensor has a batch dimension
