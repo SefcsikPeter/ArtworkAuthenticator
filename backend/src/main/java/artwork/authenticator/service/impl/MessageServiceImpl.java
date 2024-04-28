@@ -147,7 +147,7 @@ public class MessageServiceImpl implements MessageService {
     } catch (IOException | InterruptedException e) {
       LOG.error("could not get response from gpt-4 vision " + e.getMessage());
     }
-    return gptResponse;
+    return gptResponse.replace('"', '\'');
   }
 
   private String appendJsonEnding(String jsonPayload) {

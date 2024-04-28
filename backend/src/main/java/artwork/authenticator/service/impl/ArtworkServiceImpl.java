@@ -157,6 +157,7 @@ public class ArtworkServiceImpl implements ArtworkService {
     String gptResponse = "";
     try {
       String apiKey = "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";
+      //String apiKey = "asd";
       String jsonPayload = String.format("""
           {
             "model": "gpt-4-vision-preview",
@@ -216,6 +217,6 @@ public class ArtworkServiceImpl implements ArtworkService {
     } catch (IOException | InterruptedException e) {
       LOG.error("could not get response from gpt-4 vision " + e.getMessage());
     }
-    return gptResponse;
+    return gptResponse.replace('"', '\'');
   }
 }
