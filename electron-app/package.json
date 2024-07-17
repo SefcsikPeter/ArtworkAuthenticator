@@ -1,0 +1,54 @@
+{
+  "name": "electron-app",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "electron": "^12.0.0",
+    "electron-builder": "^22.14.13"
+  },
+  "build": {
+    "appId": "com.artworkauthenticator",
+    "directories": {
+      "output": "dist",
+      "buildResources": "build"
+    },
+    "files": [
+      "main.js",
+      "package.json",
+      "node_modules/**/*",
+      "../frontend/dist/artwork-authenticator/**/*"
+    ],
+    "extraResources": [
+      {
+        "from": "../frontend/dist/artwork-authenticator/",
+        "to": "dist/artwork-authenticator",
+        "filter": [
+          "**/*"
+        ]
+      }
+    ],
+    "win": {
+      "target": "nsis",
+      "icon": "build/icon.ico"
+    },
+    "mac": {
+      "target": "dmg",
+      "icon": "build/icon.icns"
+    },
+    "linux": {
+      "target": "AppImage",
+      "icon": "build/icon.png"
+    }
+  },
+  "dependencies": {
+    "express": "^4.19.2"
+  }
+}
