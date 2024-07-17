@@ -24,6 +24,7 @@
       "main.js",
       "package.json",
       "node_modules/**/*",
+      "../backend/target/**/*",
       "../frontend/dist/artwork-authenticator/**/*"
     ],
     "extraResources": [

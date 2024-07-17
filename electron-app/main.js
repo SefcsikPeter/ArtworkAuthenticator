@@ -8,7 +8,9 @@ const serverPort = 3000;
 let backendProcess;
 
 function startBackend() {
-    const backendJarPath = path.join(__dirname, '../backend/target/e12025978-0.0.1-SNAPSHOT.jar'); // Adjust this path to your jar file
+    const backendJarPath = app.isPackaged
+        ? path.join(process.resourcesPath, 'backend/target/e12025978-0.0.1-SNAPSHOT.jar')
+        : path.join(__dirname, '../backend/target/e12025978-0.0.1-SNAPSHOT.jar');
     backendProcess = spawn('java', ['-jar', backendJarPath]);
 
     backendProcess.stdout.on('data', (data) => {
@@ -22,6 +24,8 @@ function startBackend() {
     backendProcess.on('close', (code) => {
         console.log(`Backend process exited with code ${code}`);
     });
+
+    console.log('Backend process started on port 8080');
 }
 
 function createWindow() {
