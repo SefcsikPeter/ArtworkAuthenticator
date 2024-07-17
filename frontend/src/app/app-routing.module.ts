@@ -9,7 +9,7 @@ const routes: Routes = [
   {path: 'home', component: HomeComponent},
   {path: 'history', component: HistoryComponent},
   {path: 'results/:id', component: ResultPageComponent},
-  {path: '**', redirectTo: 'horses'},
+  {path: '**', redirectTo: 'home'},
 ];
 
 @NgModule({
