@@ -1,4 +1,4 @@
-const { app, BrowserWindow } = require('electron');
+const { app, BrowserWindow, dialog, ipcMain } = require('electron');
 const path = require('path');
 const express = require('express');
 
@@ -12,6 +12,7 @@ function createWindow() {
         webPreferences: {
             nodeIntegration: true,
             contextIsolation: false,
+            webSecurity: false, // Disable web security to allow local file URLs
         },
     });
 
@@ -55,4 +56,18 @@ app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) {
         createWindow();
     }
+});
+
+// Handle IPC event for opening file dialog
+ipcMain.on('open-file-dialog', (event) => {
+    dialog.showOpenDialog({
+        properties: ['openFile'],
+        filters: [{ name: 'Images', extensions: ['jpg', 'png', 'gif'] }]
+    }).then(result => {
+        if (!result.canceled) {
+            event.sender.send('selected-file', result.filePaths[0]);
+        }
+    }).catch(err => {
+        console.log(err);
+    });
 });
