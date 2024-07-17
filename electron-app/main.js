@@ -1,14 +1,33 @@
 const { app, BrowserWindow, dialog, ipcMain } = require('electron');
 const path = require('path');
 const express = require('express');
+const { spawn } = require('child_process');
 
 const server = express();
 const serverPort = 3000;
+let backendProcess;
+
+function startBackend() {
+    const backendJarPath = path.join(__dirname, '../backend/target/e12025978-0.0.1-SNAPSHOT.jar'); // Adjust this path to your jar file
+    backendProcess = spawn('java', ['-jar', backendJarPath]);
+
+    backendProcess.stdout.on('data', (data) => {
+        console.log(`Backend stdout: ${data}`);
+    });
+
+    backendProcess.stderr.on('data', (data) => {
+        console.error(`Backend stderr: ${data}`);
+    });
+
+    backendProcess.on('close', (code) => {
+        console.log(`Backend process exited with code ${code}`);
+    });
+}
 
 function createWindow() {
     const mainWindow = new BrowserWindow({
-        width: 800,
-        height: 600,
+        width: 1200,
+        height: 800,
         webPreferences: {
             nodeIntegration: true,
             contextIsolation: false,
@@ -24,6 +43,8 @@ function createWindow() {
 }
 
 app.on('ready', () => {
+    startBackend(); // Start the backend server
+
     // Determine the correct path to the dist directory
     const distPath = app.isPackaged
         ? path.join(process.resourcesPath, 'dist/artwork-authenticator')
@@ -55,6 +76,12 @@ app.on('window-all-closed', () => {
 app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) {
         createWindow();
+    }
+});
+
+app.on('will-quit', () => {
+    if (backendProcess) {
+        backendProcess.kill();
     }
 });
 
