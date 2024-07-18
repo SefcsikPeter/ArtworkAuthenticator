@@ -24,6 +24,9 @@
       "main.js",
       "package.json",
       "node_modules/**/*",
+      "../backend/src/main/java/artwork/authenticator/python/authenticator.py",
+      "../backend/src/main/java/artwork/authenticator/python/model_epoch_35.pth",
+      "../conda-env/auth-env/**/*",
       "../frontend/dist/artwork-authenticator/**/*",
       "../backend/target/**/*"
     ],
@@ -38,6 +41,27 @@
       {
         "from": "../backend/target/",
         "to": "backend",
+        "filter": [
+          "**/*"
+        ]
+      },
+      {
+        "from": "../backend/src/main/java/artwork/authenticator/python/authenticator.py",
+        "to": "backend/python/authenticator.py",
+        "filter": [
+          "**/*"
+        ]
+      },
+      {
+        "from": "../backend/src/main/java/artwork/authenticator/python/model_epoch_35.pth",
+        "to": "backend/python/model_epoch_35.pth",
+        "filter": [
+          "**/*"
+        ]
+      },
+      {
+        "from": "../conda-env/auth-env",
+        "to": "conda-env/auth-env",
         "filter": [
           "**/*"
         ]
