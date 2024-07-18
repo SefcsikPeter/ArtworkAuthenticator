@@ -15,17 +15,18 @@ import io
 
 # Load densenet
 
-densenet = models.densenet121(pretrained=False)
+densenet = models.densenet121()
 
 # Replace the classifier
 num_ftrs = densenet.classifier.in_features
 densenet.classifier = nn.Linear(num_ftrs, 24)
 
 # Move the model to GPU if available
-device = torch.device("cuda") # device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 densenet = densenet.to(device)
 
 # Load fine-tuned model
+# TODO change path
 checkpoint_path = 'C:/Users/ptsef/OneDrive/Desktop/BSC/UserInterface/template-java/backend/src/main/java/artwork/authenticator/python/model_epoch_35.pth'
 checkpoint = torch.load(checkpoint_path)
 densenet.load_state_dict(checkpoint['state_dict'])
