@@ -89,13 +89,14 @@ public class ArtworkServiceImpl implements ArtworkService {
     String output = "";
     //TODO: change these paths if on different computer or trying to execute with different env
     String pythonScriptPath = "C:\\Users\\ptsef\\OneDrive\\Desktop\\BSC\\UserInterface\\template-java\\backend\\src\\main\\java\\artwork\\authenticator\\python\\authenticator.py";
-    String condaEnvPath = "C:\\ProgramData\\miniconda3\\envs\\gcv_exercise_4";
+    String condaEnvPath = "..\\conda-env\\auth-env";
 
     String condaActivateScript = "conda activate " + condaEnvPath;
     String pythonExecutable = condaEnvPath + "\\python";
 
     try {
       String imagePath = image.replaceFirst("^file://", "");
+      System.out.println(imagePath);
       ProcessBuilder pb =
           new ProcessBuilder("cmd", "/c", condaActivateScript, "&&", pythonExecutable, pythonScriptPath, imagePath, "" + artistIndex);
       Process p = pb.start();
