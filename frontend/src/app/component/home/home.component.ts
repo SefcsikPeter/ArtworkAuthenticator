@@ -48,10 +48,6 @@ export class HomeComponent implements OnInit {
 
   processSelectedFile(filePath: string) {
     console.log('Processing file:', filePath);
-    this.notification.success('', filePath, {
-      toastClass: 'user-info',
-      positionClass: 'custom-toast-center'
-    });
     this.isImageSelected = true;
     this.imageSrc = `file://${filePath}`; // Use the file:// protocol to display the image
     console.log('Image source:', this.imageSrc); // Log for debugging
