@@ -32,6 +32,7 @@ function createWindow() {
     const mainWindow = new BrowserWindow({
         width: 1400,
         height: 800,
+        fullscreen: true,
         webPreferences: {
             nodeIntegration: true,
             contextIsolation: false,
