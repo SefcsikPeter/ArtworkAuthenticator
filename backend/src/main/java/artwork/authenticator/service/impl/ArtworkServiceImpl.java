@@ -98,7 +98,7 @@ public class ArtworkServiceImpl implements ArtworkService {
     String pythonExecutable = condaEnvPath + "\\python";
 
     try {
-      String imagePath = saveImage(image, baseFolderPath, artworkId);
+      String imagePath = image.replaceFirst("^file://", "");
       ProcessBuilder pb =
           new ProcessBuilder("cmd", "/c", condaActivateScript, "&&", pythonExecutable, pythonScriptPath, imagePath, "" + artistIndex);
       Process p = pb.start();
@@ -122,35 +122,6 @@ public class ArtworkServiceImpl implements ArtworkService {
       e.printStackTrace();
     }
     return output;
-  }
-
-  public String saveImage(String base64Image, String baseFolderPath, Long id) {
-    try {
-      // Remove data URL prefix if present
-      if (base64Image.contains(",")) {
-        base64Image = base64Image.substring(base64Image.indexOf(",") + 1);
-      }
-
-      // Decode Base64 to byte array
-      byte[] imageBytes = Base64.getDecoder().decode(base64Image);
-
-      // Define the output path for the image file
-      String outputPath = baseFolderPath + "/img" + id + ".jpg";
-      File outputFile = new File(outputPath);
-
-      // Ensure the directory exists
-      outputFile.getParentFile().mkdirs();
-
-      // Write the bytes directly to a file as a JPEG image
-      try (FileOutputStream fos = new FileOutputStream(outputFile)) {
-        fos.write(imageBytes);
-      }
-
-      return outputPath;
-    } catch (IOException e) {
-      System.err.println("Error saving image: " + e.getMessage());
-      return null;
-    }
   }
 
   private String imageAnalysisRequestToGPT4(String base64Image, ArtworkDetailDto artwork) {
