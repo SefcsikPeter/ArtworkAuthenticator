@@ -24,13 +24,20 @@
       "main.js",
       "package.json",
       "node_modules/**/*",
-      "../backend/target/**/*",
-      "../frontend/dist/artwork-authenticator/**/*"
+      "../frontend/dist/artwork-authenticator/**/*",
+      "../backend/target/**/*"
     ],
     "extraResources": [
       {
         "from": "../frontend/dist/artwork-authenticator/",
         "to": "dist/artwork-authenticator",
+        "filter": [
+          "**/*"
+        ]
+      },
+      {
+        "from": "../backend/target/",
+        "to": "backend",
         "filter": [
           "**/*"
         ]

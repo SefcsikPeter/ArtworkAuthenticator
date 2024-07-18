@@ -9,7 +9,7 @@ let backendProcess;
 
 function startBackend() {
     const backendJarPath = app.isPackaged
-        ? path.join(process.resourcesPath, 'backend/target/e12025978-0.0.1-SNAPSHOT.jar')
+        ? path.join(process.resourcesPath, 'backend/e12025978-0.0.1-SNAPSHOT.jar')
         : path.join(__dirname, '../backend/target/e12025978-0.0.1-SNAPSHOT.jar');
     backendProcess = spawn('java', ['-jar', backendJarPath]);
 
@@ -30,7 +30,7 @@ function startBackend() {
 
 function createWindow() {
     const mainWindow = new BrowserWindow({
-        width: 1200,
+        width: 1400,
         height: 800,
         webPreferences: {
             nodeIntegration: true,
