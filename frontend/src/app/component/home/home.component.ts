@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import { Artist } from '../../dto/artist';
 import { FormGroup, FormControl } from '@angular/forms';
 import { ArtworkService } from '../../service/artwork.service';
@@ -23,7 +23,8 @@ export class HomeComponent implements OnInit {
   constructor(
     private service: ArtworkService,
     private router: Router,
-    private notification: ToastrService
+    private notification: ToastrService,
+    private changeDetectorRef: ChangeDetectorRef
   ) {
     ipcRenderer.on('selected-file', (event: any, path: string) => {
       console.log('Selected file:', path);
@@ -55,6 +56,7 @@ export class HomeComponent implements OnInit {
     this.imageSrc = `file://${filePath}`; // Use the file:// protocol to display the image
     console.log('Image source:', this.imageSrc); // Log for debugging
     this.imageName = filePath.split('\\').pop() || filePath.split('/').pop() || '';
+    this.changeDetectorRef.detectChanges();
   }
 
   onSubmit(): void {
