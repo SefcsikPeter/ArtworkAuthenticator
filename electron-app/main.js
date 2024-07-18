@@ -48,7 +48,10 @@ function createWindow() {
 }
 
 app.on('ready', () => {
-    startBackend(); // Start the backend server
+    // Start the backend server if packed
+    if (app.isPackaged) {
+        startBackend();
+    }
 
     // Determine the correct path to the dist directory
     const distPath = app.isPackaged
@@ -94,7 +97,7 @@ app.on('will-quit', () => {
 ipcMain.on('open-file-dialog', (event) => {
     dialog.showOpenDialog({
         properties: ['openFile'],
-        filters: [{ name: 'Images', extensions: ['jpg', 'png', 'gif'] }]
+        filters: [{ name: 'Images', extensions: ['jpg', 'png'] }]
     }).then(result => {
         if (!result.canceled) {
             event.sender.send('selected-file', result.filePaths[0]);
