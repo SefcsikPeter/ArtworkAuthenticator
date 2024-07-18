@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 
 @RestController
@@ -31,7 +32,13 @@ public class ArtworkEndpoint {
   public Long analyse(@RequestBody ArtworkDetailDto artwork) {
     LOG.info("POST " + BASE_PATH);
     LOG.trace("Body of request:\n{}", artwork);
-    return this.service.analyse(artwork);
+    try {
+      return this.service.analyse(artwork);
+    } catch (IOException e) {
+      HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
+      logClientError(status, "Failed to execute python script", e);
+      throw new ResponseStatusException(status, e.getMessage(), e);
+    }
   }
 
   @GetMapping("{id}")

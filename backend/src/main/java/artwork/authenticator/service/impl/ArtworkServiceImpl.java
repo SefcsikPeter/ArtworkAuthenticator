@@ -51,7 +51,7 @@ public class ArtworkServiceImpl implements ArtworkService {
   }
 
   @Override
-  public Long analyse(ArtworkDetailDto artwork) {
+  public Long analyse(ArtworkDetailDto artwork) throws IOException {
     LOG.trace("analyse({})", artwork);
     // Save artwork
     Artwork analysedArtwork = artworkDao.create(artwork);
@@ -87,11 +87,21 @@ public class ArtworkServiceImpl implements ArtworkService {
     return artworks;
   }
 
-  private String runPythonScript(String image, int artistIndex) {
+  private String runPythonScript(String image, int artistIndex) throws IOException{
+    // TODO remove
+    boolean testmode = false;
     String output = "";
     //TODO: change these paths if on different computer or trying to execute with different env
-    String pythonScriptPath = "C:\\Users\\ptsef\\OneDrive\\Desktop\\BSC\\UserInterface\\template-java\\backend\\src\\main\\java\\artwork\\authenticator\\python\\authenticator.py";
-    String condaEnvPath = "..\\conda-env\\auth-env";
+    String pythonScriptPath = "";
+    String condaEnvPath = "";
+    if (testmode) {
+      pythonScriptPath = "C:\\Users\\ptsef\\OneDrive\\Desktop\\BSC\\UserInterface\\template-java\\backend\\src\\main\\java\\artwork\\authenticator\\python\\authenticator.py";
+      condaEnvPath = "..\\conda-env\\auth-env";
+    } else {
+      String workingDirectory = System.getProperty("user.dir");
+      pythonScriptPath = workingDirectory + "\\resources\\backend\\python\\authenticator.py";
+      condaEnvPath = workingDirectory + "\\resources\\conda-env\\auth-env";
+    }
 
     String condaActivateScript = "conda activate " + condaEnvPath;
     String pythonExecutable = condaEnvPath + "\\python";
@@ -119,13 +129,14 @@ public class ArtworkServiceImpl implements ArtworkService {
       }
 
       while ((line = stdError.readLine()) != null) {
-        System.err.println(line);
+        LOG.error(line);
       }
 
       int exitCode = p.waitFor();
       System.out.println("Exited with code " + exitCode);
     } catch (IOException | InterruptedException e) {
-      e.printStackTrace();
+      throw new IOException("Running the python script failed: conda path: " + condaEnvPath + " script path: "
+          + pythonScriptPath, e);
     }
     return output;
   }
