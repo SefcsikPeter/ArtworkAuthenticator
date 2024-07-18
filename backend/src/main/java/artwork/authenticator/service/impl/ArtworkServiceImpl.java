@@ -26,8 +26,10 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -94,11 +96,17 @@ public class ArtworkServiceImpl implements ArtworkService {
     String condaActivateScript = "conda activate " + condaEnvPath;
     String pythonExecutable = condaEnvPath + "\\python";
 
+    String imagePath = image.replaceFirst("^file://", "");
+    imagePath = "\"" + imagePath + "\""; // Ensures the path is correctly quoted
+
+    List<String> commands = new ArrayList<>();
+    commands.add(pythonExecutable);
+    commands.add(pythonScriptPath);
+    commands.add(imagePath);
+    commands.add(String.valueOf(artistIndex));
+
     try {
-      String imagePath = image.replaceFirst("^file://", "");
-      System.out.println(imagePath);
-      ProcessBuilder pb =
-          new ProcessBuilder("cmd", "/c", condaActivateScript, "&&", pythonExecutable, pythonScriptPath, imagePath, "" + artistIndex);
+      ProcessBuilder pb = new ProcessBuilder(commands);
       Process p = pb.start();
 
       BufferedReader in = new BufferedReader(new InputStreamReader(p.getInputStream()));
