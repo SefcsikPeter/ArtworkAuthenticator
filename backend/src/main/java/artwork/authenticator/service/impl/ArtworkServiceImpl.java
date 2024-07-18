@@ -53,11 +53,8 @@ public class ArtworkServiceImpl implements ArtworkService {
     LOG.trace("analyse({})", artwork);
     // Save artwork
     Artwork analysedArtwork = artworkDao.create(artwork);
-
-    String baseFolderPath = "C:/Users/ptsef/OneDrive/Desktop/BSC/UserInterface/template-java/backend/images";
-
     Long artworkId = analysedArtwork.getId();
-    String neuralNetResult = runPythonScript(artwork.image(), artworkId, Artist.getArtistIndex(artwork.artist()), baseFolderPath);
+    String neuralNetResult = runPythonScript(artwork.image(), Artist.getArtistIndex(artwork.artist()));
     String gptResult = imageAnalysisRequestToGPT4(artwork.image(), artwork);
 
     ArtworkResultDto resultDto = new ArtworkResultDto(artworkId, neuralNetResult, gptResult);
@@ -88,7 +85,7 @@ public class ArtworkServiceImpl implements ArtworkService {
     return artworks;
   }
 
-  private String runPythonScript(String image, Long artworkId, int artistIndex, String baseFolderPath) {
+  private String runPythonScript(String image, int artistIndex) {
     String output = "";
     //TODO: change these paths if on different computer or trying to execute with different env
     String pythonScriptPath = "C:\\Users\\ptsef\\OneDrive\\Desktop\\BSC\\UserInterface\\template-java\\backend\\src\\main\\java\\artwork\\authenticator\\python\\authenticator.py";
