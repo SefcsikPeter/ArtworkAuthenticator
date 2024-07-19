@@ -43,8 +43,8 @@ function createWindow() {
     // Load the Angular application from the local server
     mainWindow.loadURL(`http://localhost:${serverPort}`).catch(err => console.log('Failed to load URL:', err));
 
-    // Open the DevTools (optional)
-    // mainWindow.webContents.openDevTools();
+    // TODO: remove
+    mainWindow.webContents.openDevTools();
 }
 
 app.on('ready', () => {
