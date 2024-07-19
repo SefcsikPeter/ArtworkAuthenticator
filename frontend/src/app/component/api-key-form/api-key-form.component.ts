@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {ApiKeyServiceService} from '../../service/api-key-service.service';
+import {FormControl, FormGroup} from '@angular/forms';
 
 @Component({
   selector: 'app-api-key-form',
@@ -11,26 +12,33 @@ export class ApiKeyFormComponent implements OnInit {
   validationResult: boolean | undefined;
   errorMessage = '';
   submitted = false;
+  apiKeyForm: FormGroup | undefined;
 
   constructor(
     private apiKeyService: ApiKeyServiceService
   ) { }
 
   ngOnInit(): void {
+    this.apiKeyForm = new FormGroup({
+      apiKey: new FormControl()
+    });
   }
 
   validateApiKey(): void {
-    this.submitted = true;
-    this.apiKeyService.checkApiKey(this.apiKey).subscribe(
-      isValid => {
-        this.validationResult = isValid;
-        this.errorMessage = '';
-      },
-      error => {
-        this.validationResult = false;
-        this.errorMessage = 'An error occurred while validating the API key.';
-        console.error('An error occurred:', error);
-      }
-    );
+    if (this.apiKeyForm?.value.apiKey) {
+      this.apiKey = this.apiKeyForm?.value.apiKey;
+      this.submitted = true;
+      this.apiKeyService.checkApiKey(this.apiKey).subscribe(
+        isValid => {
+          this.validationResult = isValid;
+          this.errorMessage = '';
+        },
+        error => {
+          this.validationResult = false;
+          this.errorMessage = 'An error occurred while validating the API key.';
+          console.error('An error occurred:', error);
+        }
+      );
+    }
   }
 }
