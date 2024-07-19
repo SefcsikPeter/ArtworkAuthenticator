@@ -12,6 +12,7 @@ import {HeaderComponent} from './component/header/header.component';
 import { HomeComponent } from './component/home/home.component';
 import { ResultPageComponent } from './component/result-page/result-page.component';
 import { HistoryComponent } from './component/history/history.component';
+import { ApiKeyFormComponent } from './component/api-key-form/api-key-form.component';
 
 @NgModule({
   declarations: [
@@ -20,6 +21,7 @@ import { HistoryComponent } from './component/history/history.component';
     HomeComponent,
     ResultPageComponent,
     HistoryComponent,
+    ApiKeyFormComponent,
   ],
     imports: [
         BrowserModule,

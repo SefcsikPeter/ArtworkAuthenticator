@@ -3,12 +3,14 @@ import {RouterModule, Routes} from '@angular/router';
 import {HomeComponent} from './component/home/home.component';
 import {ResultPageComponent} from './component/result-page/result-page.component';
 import {HistoryComponent} from './component/history/history.component';
+import {ApiKeyFormComponent} from './component/api-key-form/api-key-form.component';
 
 const routes: Routes = [
   {path: '', redirectTo: 'home', pathMatch: 'full'},
   {path: 'home', component: HomeComponent},
   {path: 'history', component: HistoryComponent},
   {path: 'results/:id', component: ResultPageComponent},
+  {path: 'apikey', component: ApiKeyFormComponent},
   {path: '**', redirectTo: 'home'},
 ];
 
