@@ -1,16 +1,29 @@
 <div>
   <h1 class="display-4">Enter Your OpenAI API Key Here</h1>
-  <form>
+  <form (ngSubmit)="validateApiKey()">
     <div class="input-area row d-flex col-10 offset-1">
       <div class="row">
         <div class="col-8">
-          <input type="text" class="form-control mb-3" placeholder="OpenAI API key" formControlName="apiKey">
+          <input type="text"
+                 id="apiKey"
+                 [(ngModel)]="apiKey"
+                 name="apiKey"
+                 required
+                 class="form-control mb-3"
+                 placeholder="OpenAI API key"
+                 formControlName="apiKey">
         </div>
         <div class="col-4">
-          <button type="button" class="btn-upload btn-primary btn">
+          <button type="submit" class="btn-upload btn-primary btn">
             Set
           </button>
         </div>
+      </div>
+      <div *ngIf="validationResult" style="color: limegreen">
+        Your API key is set!
+      </div>
+      <div *ngIf="!validationResult && submitted" style="color: orangered">
+        You entered an invalid API key!
       </div>
     </div>
   </form>
