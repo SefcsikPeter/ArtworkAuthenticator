@@ -68,11 +68,34 @@ app.on('ready', () => {
         res.sendFile(path.join(distPath, 'index.html'));
     });
 
-    // Start the server
-    server.listen(serverPort, () => {
+    // Start the server with error handling
+    const serverInstance = server.listen(serverPort, () => {
         console.log(`Server running at http://localhost:${serverPort}`);
         createWindow();
     });
+
+    serverInstance.on('error', (error) => {
+        if (error.code === 'EADDRINUSE') {
+            dialog.showErrorBox('Port In Use', `The port ${serverPort} is already in use. Please close the application using this port to start this application.`);
+            app.quit();
+        } else {
+            dialog.showErrorBox('Server Error', `An unexpected error occurred: ${error.message}`);
+            app.quit();
+        }
+    });
+});
+
+// Global error handler to catch uncaught exceptions and unhandled promise rejections
+process.on('uncaughtException', (error) => {
+    dialog.showErrorBox('An Error Occurred', `An unexpected error occurred: ${error.message}`);
+    console.error('Uncaught Exception:', error);
+    app.quit();
+});
+
+process.on('unhandledRejection', (reason, promise) => {
+    dialog.showErrorBox('An Error Occurred', `An unexpected error occurred: ${reason.message}`);
+    console.error('Unhandled Rejection at:', promise, 'reason:', reason);
+    app.quit();
 });
 
 app.on('window-all-closed', () => {
