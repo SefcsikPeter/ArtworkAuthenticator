@@ -20,7 +20,7 @@ function startBackend() {
         backendProcess.stdout.on('data', (data) => {
             console.log(`Backend stdout: ${data}`);
             // Assuming the backend logs a specific message when it's ready
-            if (data.toString().includes('Started Application')) {
+            if (data.toString().includes('Started ArtworkAuthenticatorApplication')) {
                 resolve();
             }
         });
