@@ -20,35 +20,39 @@ import java.util.Base64;
 public class ArtworkAuthenticatorApplication {
 
   public static void main(String[] args) {
-    try {
-      generateRsaKeys();
-      SpringApplication.run(ArtworkAuthenticatorApplication.class, args);
-    } catch (Exception e) {
-      System.out.println("Could not generate RSA keys.");
-    }
+    generateRsaKeys();
+    SpringApplication.run(ArtworkAuthenticatorApplication.class, args);
   }
 
-  private static void generateRsaKeys() throws NoSuchAlgorithmException, IOException {
+  private static void generateRsaKeys() {
     // Generate the key pair
-    KeyPairGenerator keyGen = KeyPairGenerator.getInstance("RSA");
-    keyGen.initialize(2048);
-    KeyPair pair = keyGen.generateKeyPair();
+    try {
+      KeyPairGenerator keyGen = KeyPairGenerator.getInstance("RSA");
+      keyGen.initialize(2048);
+      KeyPair pair = keyGen.generateKeyPair();
 
-    // Get the public and private keys
-    PublicKey publicKey = pair.getPublic();
-    PrivateKey privateKey = pair.getPrivate();
+      // Get the public and private keys
+      PublicKey publicKey = pair.getPublic();
+      PrivateKey privateKey = pair.getPrivate();
 
-    // Save the public key in PEM format
-    X509EncodedKeySpec x509EncodedKeySpec = new X509EncodedKeySpec(publicKey.getEncoded());
-    String publicKeyPEM = "-----BEGIN PUBLIC KEY-----\n" + Base64.getEncoder().encodeToString(x509EncodedKeySpec.getEncoded()) + "\n-----END PUBLIC KEY-----";
-    Files.write(Paths.get("public_key.pem"), publicKeyPEM.getBytes(), StandardOpenOption.CREATE);
+      try {
+        // Save the public key in PEM format
+        X509EncodedKeySpec x509EncodedKeySpec = new X509EncodedKeySpec(publicKey.getEncoded());
+        String publicKeyPEM = "-----BEGIN PUBLIC KEY-----\n" + Base64.getEncoder().encodeToString(x509EncodedKeySpec.getEncoded()) + "\n-----END PUBLIC KEY-----";
+        Files.write(Paths.get("public_key.pem"), publicKeyPEM.getBytes(), StandardOpenOption.CREATE);
 
-    // Save the private key in PEM format
-    PKCS8EncodedKeySpec pkcs8EncodedKeySpec = new PKCS8EncodedKeySpec(privateKey.getEncoded());
-    String privateKeyPEM = "-----BEGIN PRIVATE KEY-----\n" + Base64.getEncoder().encodeToString(pkcs8EncodedKeySpec.getEncoded()) + "\n-----END PRIVATE KEY-----";
-    Files.write(Paths.get("private_key.pem"), privateKeyPEM.getBytes(), StandardOpenOption.CREATE);
+        // Save the private key in PEM format
+        PKCS8EncodedKeySpec pkcs8EncodedKeySpec = new PKCS8EncodedKeySpec(privateKey.getEncoded());
+        String privateKeyPEM = "-----BEGIN PRIVATE KEY-----\n" + Base64.getEncoder().encodeToString(pkcs8EncodedKeySpec.getEncoded()) + "\n-----END PRIVATE KEY-----";
+        Files.write(Paths.get("private_key.pem"), privateKeyPEM.getBytes(), StandardOpenOption.CREATE);
+      } catch (IOException e) {
+        System.out.println("Could not save RSA keys");
+      }
 
-    System.out.println("RSA keys generated and saved to files.");
+      System.out.println("RSA keys generated and saved to files.");
+    } catch (NoSuchAlgorithmException e) {
+      System.out.println("KeyPairGenerator not available");
+    }
   }
 
 }

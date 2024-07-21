@@ -15,13 +15,38 @@ function startBackend() {
 
         backendProcess = spawn('java', ['-jar', backendJarPath]);
 
-        let backendErrorBuffer = '';
-
         backendProcess.stdout.on('data', (data) => {
             console.log(`Backend stdout: ${data}`);
             // Assuming the backend logs a specific message when it's ready
             if (data.toString().includes('Started ArtworkAuthenticatorApplication')) {
                 resolve();
+            }
+        });
+
+        backendProcess.stdout.on('data', (data) => {
+            console.error(`Backend stderr: ${data}`);
+            let backendOutputBuffer = data.toString();
+            // Check if the output contains the specific error message
+            if (backendOutputBuffer.includes('Port 8080 was already in use')) {
+                reject(new Error('Port 8080 was already in use'));
+            }
+        });
+
+        backendProcess.stdout.on('data', (data) => {
+            console.error(`Backend stderr: ${data}`);
+            let backendOutputBuffer = data.toString();
+            // Check if the output contains the specific error message
+            if (backendOutputBuffer.includes('KeyPairGenerator not available')) {
+                reject(new Error('KeyPairGenerator not available'));
+            }
+        });
+
+        backendProcess.stdout.on('data', (data) => {
+            console.error(`Backend stderr: ${data}`);
+            let backendOutputBuffer = data.toString();
+            // Check if the output contains the specific error message
+            if (backendOutputBuffer.includes('Could not save RSA keys')) {
+                reject(new Error('Could not save RSA keys'));
             }
         });
 
@@ -83,7 +108,21 @@ app.on('ready', () => {
             })
             .catch((error) => {
                 console.error('Failed to start backend:', error);
-                dialog.showErrorBox('Port In Use', 'The port 8080 is already in use. Please close the application using this port.');
+                let errorMessage = error.message;
+
+                if (error.message.includes('Port 8080 was already in use')) {
+                    errorMessage = 'The port 8080 is already in use. Please close the application using this port.';
+                }
+
+                if (error.message.includes('KeyPairGenerator not available')) {
+                    errorMessage = 'KeyPairGenerator not available';
+                }
+
+                if (error.message.includes('Could not save RSA keys')) {
+                    errorMessage = 'Could not save RSA keys';
+                }
+
+                dialog.showErrorBox('Backend Error', errorMessage);
                 setTimeout(() => app.quit(), 1000); // Delay quit to allow the dialog to show
             });
     });
