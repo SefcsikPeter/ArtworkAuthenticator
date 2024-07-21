@@ -48,7 +48,7 @@ public class ArtworkAuthenticatorApplication {
     String privateKeyPEM = "-----BEGIN PRIVATE KEY-----\n" + Base64.getEncoder().encodeToString(pkcs8EncodedKeySpec.getEncoded()) + "\n-----END PRIVATE KEY-----";
     Files.write(Paths.get("private_key.pem"), privateKeyPEM.getBytes(), StandardOpenOption.CREATE);
 
-    System.out.println("Keys generated and saved to files.");
+    System.out.println("RSA keys generated and saved to files.");
   }
 
 }
