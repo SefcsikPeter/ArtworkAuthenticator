@@ -47,13 +47,22 @@ export class HomeComponent implements OnInit {
   }
 
   processSelectedFile(filePath: string) {
-    console.log('Processing file:', filePath);
     this.isImageSelected = true;
-    this.imageSrc = `file://${filePath}`; // Use the file:// protocol to display the image
-    console.log('Image source:', this.imageSrc); // Log for debugging
-    this.imageName = filePath.split('\\').pop() || filePath.split('/').pop() || '';
+    this.imageSrc = `http://localhost:3000/image/${filePath}`;
+    //this.imageName = decodeURIComponent(filePath).split('\\').pop()?.split('/').pop() || '';
+    try {
+      // Decode the Base64 string to UTF-8
+      const decodedPath = atob(filePath);
+
+      // Extract the file name from the full path
+      this.imageName = decodedPath.split('\\').pop()?.split('/').pop() || '';
+    } catch (e) {
+      console.error('Failed to decode file path', e);
+      this.imageName = 'Invalid file';
+    }
     this.changeDetectorRef.detectChanges();
   }
+
 
   onSubmit(): void {
     console.log('submitted form', this.artworkForm?.value);

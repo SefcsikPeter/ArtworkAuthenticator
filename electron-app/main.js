@@ -2,6 +2,7 @@ const { app, BrowserWindow, dialog, ipcMain } = require('electron');
 const path = require('path');
 const express = require('express');
 const { spawn } = require('child_process');
+const fs = require("fs");
 
 const server = express();
 const serverPort = 3000;
@@ -69,7 +70,7 @@ function createWindow() {
         webPreferences: {
             nodeIntegration: true,
             contextIsolation: false,
-            webSecurity: false, // Disable web security to allow local file URLs
+            webSecurity: true,
         },
     });
 
@@ -90,6 +91,21 @@ app.on('ready', () => {
 
     // Serve static files from the dist directory
     server.use(express.static(distPath));
+
+    server.get('/image/:path', (req, res) => {
+        try {
+            const filePath = Buffer.from(decodeURIComponent(req.params.path), 'base64').toString('utf8');
+            // Stream the file to the response
+            const readStream = fs.createReadStream(filePath);
+            readStream.on('error', error => {
+                res.status(404).send('Image not found');
+            });
+            res.setHeader('Content-Type', 'image/jpg'); // Set appropriate content type if known, or make it dynamic
+            readStream.pipe(res);
+        } catch (error) {
+            res.status(500).send('Failed to process image');
+        }
+    });
 
     // Send the index.html file for any route
     server.get('*', (req, res) => {
@@ -169,14 +185,14 @@ app.on('will-quit', () => {
     }
 });
 
-// Handle IPC event for opening file dialog
 ipcMain.on('open-file-dialog', (event) => {
     dialog.showOpenDialog({
         properties: ['openFile'],
-        filters: [{ name: 'Images', extensions: ['jpg', 'png'] }]
+        filters: [{ name: 'Images', extensions: ['jpg', 'png', 'jpeg'] }]
     }).then(result => {
         if (!result.canceled) {
-            event.sender.send('selected-file', result.filePaths[0]);
+            const encodedPath = encodeURIComponent(Buffer.from(result.filePaths[0]).toString('base64'));
+            event.sender.send('selected-file', encodedPath);
         }
     }).catch(err => {
         console.log(err);
