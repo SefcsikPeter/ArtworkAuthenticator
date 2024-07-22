@@ -52,11 +52,10 @@ public class ApiKeyEndpoint {
   @PostMapping
   public ResponseEntity<String> setApiKey(@RequestBody ApiKeyDto encryptedApiKey) {
     try {
-      LOG.info("Encrypted API key: " + encryptedApiKey.encryptedApiKey());
+      LOG.info("Encrypted API key received: " + encryptedApiKey.encryptedApiKey());
       PrivateKey privateKey = this.getPrivateKey();
       String decryptedApiKey = this.decrypt(encryptedApiKey.encryptedApiKey(), privateKey);
       artworkService.setApiKey(decryptedApiKey);
-      System.out.println(decryptedApiKey);
       return ResponseEntity.ok("API key set successfully");
     } catch (Exception e) {
       LOG.error("Failed to set API key", e);
