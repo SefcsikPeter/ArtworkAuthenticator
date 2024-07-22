@@ -145,8 +145,6 @@ public class ArtworkServiceImpl implements ArtworkService {
   private String imageAnalysisRequestToGPT4(String base64Image, ArtworkDetailDto artwork) {
     String gptResponse = "";
     try {
-      String apiKey = "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";
-      //String apiKey = "asd";
       String jsonPayload = String.format("""
           {
             "model": "gpt-4-vision-preview",
