@@ -38,12 +38,16 @@ public class ArtworkAuthenticatorApplication {
       try {
         // Save the public key in PEM format
         X509EncodedKeySpec x509EncodedKeySpec = new X509EncodedKeySpec(publicKey.getEncoded());
-        String publicKeyPEM = "-----BEGIN PUBLIC KEY-----\n" + Base64.getEncoder().encodeToString(x509EncodedKeySpec.getEncoded()) + "\n-----END PUBLIC KEY-----";
+        String publicKeyPEM = "-----BEGIN PUBLIC KEY-----\n"
+            + Base64.getEncoder().encodeToString(x509EncodedKeySpec.getEncoded())
+            + "\n-----END PUBLIC KEY-----";
         Files.write(Paths.get("public_key.pem"), publicKeyPEM.getBytes(), StandardOpenOption.CREATE);
 
         // Save the private key in PEM format
         PKCS8EncodedKeySpec pkcs8EncodedKeySpec = new PKCS8EncodedKeySpec(privateKey.getEncoded());
-        String privateKeyPEM = "-----BEGIN PRIVATE KEY-----\n" + Base64.getEncoder().encodeToString(pkcs8EncodedKeySpec.getEncoded()) + "\n-----END PRIVATE KEY-----";
+        String privateKeyPEM = "-----BEGIN PRIVATE KEY-----\n"
+            + Base64.getEncoder().encodeToString(pkcs8EncodedKeySpec.getEncoded())
+            + "\n-----END PRIVATE KEY-----";
         Files.write(Paths.get("private_key.pem"), privateKeyPEM.getBytes(), StandardOpenOption.CREATE);
       } catch (IOException e) {
         System.out.println("Could not save RSA keys");
