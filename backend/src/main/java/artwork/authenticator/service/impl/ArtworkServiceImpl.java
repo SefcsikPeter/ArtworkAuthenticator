@@ -16,9 +16,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import javax.imageio.ImageIO;
+import javax.imageio.ImageReader;
+import javax.imageio.stream.ImageInputStream;
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileOutputStream;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.invoke.MethodHandles;
@@ -26,9 +29,11 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -54,11 +59,17 @@ public class ArtworkServiceImpl implements ArtworkService {
   @Override
   public Long analyse(ArtworkDetailDto artwork) throws IOException {
     LOG.trace("analyse({})", artwork);
-    // Save artwork
     Artwork analysedArtwork = artworkDao.create(artwork);
+    String base64Image = imageFromEncodedPathToBase64(artwork.image());
+    String imageType = getImageType(artwork.image());
+    if (imageType.equals("png")) {
+      base64Image = "data:image/png;base64," + base64Image;
+    } else if (imageType.equals("JPEG")) {
+      base64Image = "data:image/jpeg;base64," + base64Image;
+    }
     Long artworkId = analysedArtwork.getId();
     String neuralNetResult = runPythonScript(artwork.image(), Artist.getArtistIndex(artwork.artist()));
-    String gptResult = imageAnalysisRequestToGPT4(artwork.image(), artwork);
+    String gptResult = imageAnalysisRequestToGPT4(base64Image, artwork);
 
     ArtworkResultDto resultDto = new ArtworkResultDto(artworkId, neuralNetResult, gptResult);
     ArtworkResult result = artworkResultDao.create(resultDto);
@@ -209,5 +220,37 @@ public class ArtworkServiceImpl implements ArtworkService {
 
   public void setApiKey(String apiKey) {
     this.apiKey = apiKey;
+  }
+
+  private String imageFromEncodedPathToBase64(String imagePath) throws IOException {
+    System.out.println(imagePath);
+    byte[] decodedBytes = Base64.getDecoder().decode(imagePath);
+    String decodedPath = new String(decodedBytes, StandardCharsets.UTF_8);
+    System.out.println(decodedPath);
+    File file = new File(decodedPath);
+    byte[] fileContent = new byte[(int) file.length()];
+    try (FileInputStream fileInputStream = new FileInputStream(file)) {
+      fileInputStream.read(fileContent);
+      return Base64.getEncoder().encodeToString(fileContent);
+    } catch (IOException e) {
+      throw new IOException("Could not convert image to base 64");
+    }
+  }
+
+  private String getImageType(String filePath) throws IOException {
+    byte[] decodedBytes = Base64.getDecoder().decode(filePath);
+    String decodedPath = new String(decodedBytes, StandardCharsets.UTF_8);
+    File file = new File(decodedPath);
+    try (ImageInputStream iis = ImageIO.createImageInputStream(file)) {
+      Iterator<ImageReader> iter = ImageIO.getImageReaders(iis);
+      if (!iter.hasNext()) {
+        throw new IOException("No readers found for the given image.");
+      }
+      ImageReader reader = iter.next();
+      return reader.getFormatName();
+    } catch (IOException e) {
+      e.printStackTrace();
+      return null;
+    }
   }
 }
