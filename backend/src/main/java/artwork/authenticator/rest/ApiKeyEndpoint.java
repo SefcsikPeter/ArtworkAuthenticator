@@ -73,8 +73,6 @@ public class ApiKeyEndpoint {
           .replaceAll("-----END PRIVATE KEY-----", "")
           .replaceAll("\\s+", "");
 
-      LOG.info("Private Key String: " + key);
-
       // Decode the base64 encoded string
       byte[] keyBytes = Base64.getDecoder().decode(key);
 
