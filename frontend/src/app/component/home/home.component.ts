@@ -88,7 +88,7 @@ export class HomeComponent implements OnInit {
       this.artwork.description = this.artworkForm?.value.description.replace(/\n/g, ' ');
     }
     if (typeof this.imageSrc === 'string') {
-      this.artwork.image = this.imageSrc;
+      this.artwork.image = this.imageSrc.replace('http://localhost:3000/image/', '');
     }
     this.notification.success('', 'The entered information has been submitted, please wait for the results', {
       toastClass: 'user-info',
