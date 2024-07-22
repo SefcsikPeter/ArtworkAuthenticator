@@ -29,14 +29,28 @@ export class ApiKeyFormComponent implements OnInit {
       this.apiKey = this.apiKeyForm?.value.apiKey;
       this.submitted = true;
       this.apiKeyService.checkApiKey(this.apiKey).subscribe(
-        isValid => {
-          this.validationResult = isValid;
-          this.errorMessage = '';
-        },
-        error => {
-          this.validationResult = false;
-          this.errorMessage = 'An error occurred while validating the API key.';
-          console.error('An error occurred:', error);
+        {
+          next: isValid => {
+            this.validationResult = isValid;
+            this.errorMessage = '';
+            if (isValid) {
+              this.apiKeyService.sendApiKey(this.apiKey).subscribe(
+                {
+                  next: () => {
+                    console.log('Encrypted API key sent to backend');
+                  },
+                  error: err => {
+                    console.log('Failed to send API key to backend', err);
+                  }
+                }
+              );
+            }
+          },
+          error: error => {
+            this.validationResult = false;
+            this.errorMessage = 'An error occurred while validating the API key.';
+            console.error('An error occurred:', error);
+          }
         }
       );
     }

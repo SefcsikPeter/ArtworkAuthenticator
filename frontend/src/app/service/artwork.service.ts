@@ -5,7 +5,7 @@ import {Artwork} from '../dto/artwork';
 import {environment} from '../../environments/environment';
 import {ArtworkResult} from '../dto/artwork-result';
 
-const baseUri = environment.backendUrl + '/artwork';
+const baseUrl = environment.backendUrl + '/artwork';
 @Injectable({
   providedIn: 'root'
 })
@@ -18,12 +18,12 @@ export class ArtworkService {
   analyse(artwork: Artwork): Observable<ArtworkResult> {
     console.log(artwork);
     return this.http.post<Artwork>(
-      baseUri,
+      baseUrl,
       artwork
     );
   }
 
   getById(id: number) {
-    return this.http.get(baseUri + '/' + id);
+    return this.http.get(baseUrl + '/' + id);
   }
 }

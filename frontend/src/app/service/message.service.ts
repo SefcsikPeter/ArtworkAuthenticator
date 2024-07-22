@@ -5,7 +5,7 @@ import {UserMessage} from '../dto/user-message';
 import {Observable} from 'rxjs';
 import {GptResponseDto} from '../dto/gpt-response-dto';
 
-const baseUri = environment.backendUrl + '/messages';
+const baseUrl = environment.backendUrl + '/messages';
 @Injectable({
   providedIn: 'root'
 })
@@ -19,7 +19,7 @@ export class MessageService {
     console.log('user message:', userMessage);
 
     return this.http.post<GptResponseDto>(
-      baseUri,
+      baseUrl,
       userMessage
     );
   }

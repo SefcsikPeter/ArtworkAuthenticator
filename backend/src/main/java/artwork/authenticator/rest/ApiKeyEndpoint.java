@@ -1,5 +1,6 @@
 package artwork.authenticator.rest;
 
+import artwork.authenticator.dto.ApiKeyDto;
 import artwork.authenticator.service.ArtworkService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,10 +59,11 @@ public class ApiKeyEndpoint {
   }
 
   @PostMapping
-  public ResponseEntity<String> setApiKey(@RequestBody String encryptedApiKey){
+  public ResponseEntity<String> setApiKey(@RequestBody ApiKeyDto encryptedApiKey){
     try {
+      LOG.info("Encrypted API key: " + encryptedApiKey.encryptedApiKey());
       PrivateKey privateKey = this.getPrivateKey();
-      String decryptedApiKey = this.decrypt(encryptedApiKey, privateKey);
+      String decryptedApiKey = this.decrypt(encryptedApiKey.encryptedApiKey(), privateKey);
       artworkService.setApiKey(decryptedApiKey);
       return ResponseEntity.ok("API key set successfully");
     } catch (Exception e) {
@@ -76,8 +78,8 @@ public class ApiKeyEndpoint {
       String key = new String(Files.readAllBytes(Paths.get(System.getProperty("user.dir") + "\\private_key.pem")));
 
       // Remove the PEM file headers and footers
-      key = key.replaceAll("-----BEGIN PUBLIC KEY-----", "")
-          .replaceAll("-----END PUBLIC KEY-----", "")
+      key = key.replaceAll("-----BEGIN PRIVATE KEY-----", "")
+          .replaceAll("-----END PRIVATE KEY-----", "")
           .replaceAll("\\s+", "");
 
       // Decode the base64 encoded string
