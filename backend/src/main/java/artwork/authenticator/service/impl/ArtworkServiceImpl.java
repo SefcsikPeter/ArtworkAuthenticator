@@ -40,6 +40,7 @@ public class ArtworkServiceImpl implements ArtworkService {
   private final ArtworkDao artworkDao;
   private final ArtworkResultDao artworkResultDao;
   private final ArtworkMapper artworkMapper;
+  private String apiKey;
 
   public ArtworkServiceImpl(
       ArtworkDao artworkDao,
@@ -206,5 +207,9 @@ public class ArtworkServiceImpl implements ArtworkService {
       LOG.error("could not get response from gpt-4 vision " + e.getMessage());
     }
     return gptResponse.replace('"', '\'');
+  }
+
+  public void setApiKey(String apiKey) {
+    this.apiKey = apiKey;
   }
 }

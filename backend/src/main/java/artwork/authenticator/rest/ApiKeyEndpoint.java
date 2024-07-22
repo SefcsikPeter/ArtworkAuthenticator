@@ -10,12 +10,18 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.security.InvalidKeyException;
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
+import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.X509EncodedKeySpec;
@@ -33,8 +39,41 @@ public class ApiKeyEndpoint {
   @GetMapping
   public ResponseEntity<String> getPublicKey(){
     try {
-      // Read the PEM file content
       String key = new String(Files.readAllBytes(Paths.get(System.getProperty("user.dir") + "\\public_key.pem")));
+
+      key = key.replaceAll("-----BEGIN PUBLIC KEY-----", "")
+          .replaceAll("-----END PUBLIC KEY-----", "")
+          .replaceAll("\\s+", "");
+
+      byte[] keyBytes = Base64.getDecoder().decode(key);
+
+      X509EncodedKeySpec keySpec = new X509EncodedKeySpec(keyBytes);
+      KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+      PublicKey publicKey = keyFactory.generatePublic(keySpec);
+
+      return ResponseEntity.ok(Base64.getEncoder().encodeToString(publicKey.getEncoded()));
+    } catch (IOException | NoSuchAlgorithmException | InvalidKeySpecException e) {
+      return ResponseEntity.status(500).body("Failed to retrieve public key");
+    }
+  }
+
+  @PostMapping
+  public ResponseEntity<String> setApiKey(@RequestBody String encryptedApiKey){
+    try {
+      PrivateKey privateKey = this.getPrivateKey();
+      String decryptedApiKey = this.decrypt(encryptedApiKey, privateKey);
+      artworkService.setApiKey(decryptedApiKey);
+      return ResponseEntity.ok("API key set successfully");
+    } catch (Exception e) {
+      LOG.error("Failed to set API key", e);
+      return ResponseEntity.status(500).body("Failed to set API key");
+    }
+  }
+
+  private PrivateKey getPrivateKey() throws Exception {
+    try {
+      // Read the PEM file content
+      String key = new String(Files.readAllBytes(Paths.get(System.getProperty("user.dir") + "\\private_key.pem")));
 
       // Remove the PEM file headers and footers
       key = key.replaceAll("-----BEGIN PUBLIC KEY-----", "")
@@ -44,23 +83,25 @@ public class ApiKeyEndpoint {
       // Decode the base64 encoded string
       byte[] keyBytes = Base64.getDecoder().decode(key);
 
-      // Reconstruct the public key
+      // Reconstruct the private key
       X509EncodedKeySpec keySpec = new X509EncodedKeySpec(keyBytes);
       KeyFactory keyFactory = KeyFactory.getInstance("RSA");
-      PublicKey publicKey = keyFactory.generatePublic(keySpec);
 
       // Return the base64 encoded public key
-      return ResponseEntity.ok(Base64.getEncoder().encodeToString(publicKey.getEncoded()));
+      return keyFactory.generatePrivate(keySpec);
     } catch (IOException | NoSuchAlgorithmException | InvalidKeySpecException e) {
-      return ResponseEntity.status(500).body("Failed to retrieve public key");
+      throw new Exception("Failed to read private key.", e);
     }
   }
 
-  @PostMapping
-  public Boolean setApiKey(){
-    return null;
+  private String decrypt(String encryptedKey, PrivateKey privateKey)
+      throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
+    byte[] encryptedBytes = Base64.getDecoder().decode(encryptedKey);
+    Cipher cipher = Cipher.getInstance("RSA/ECB/OAEPWithSHA-256AndMGF1Padding");
+    cipher.init(Cipher.DECRYPT_MODE, privateKey);
+    byte[] decryptedBytes = cipher.doFinal(encryptedBytes);
+    return new String(decryptedBytes);
   }
-
 
 
 }
