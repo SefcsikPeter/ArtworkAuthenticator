@@ -34,7 +34,7 @@ export class ApiKeyServiceService {
   sendApiKey(apiKey: string): Observable<any> {
     return this.encryptApiKey(apiKey).pipe(
       switchMap(encryptedApiKey => {
-        console.log('encrypted API key being sent to backend', encryptedApiKey);
+        console.log('encrypted API key being sent to backend');
         return this.http.post(environment.backendUrl + '/apikey', { encryptedApiKey }, {
           headers: new HttpHeaders({
             // eslint-disable-next-line @typescript-eslint/naming-convention
