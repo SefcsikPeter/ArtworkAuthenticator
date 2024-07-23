@@ -52,6 +52,7 @@ export class ApiKeyFormComponent implements OnInit {
                 }
               );
             } else {
+              this.submitted = true;
               this.validationResult = false;
             }
           },
