@@ -27,7 +27,6 @@ export class HomeComponent implements OnInit {
     private changeDetectorRef: ChangeDetectorRef
   ) {
     ipcRenderer.on('selected-file', (event: any, path: string) => {
-      console.log('Selected file:', path);
       this.processSelectedFile(path);
     });
   }
@@ -51,9 +50,9 @@ export class HomeComponent implements OnInit {
     this.imageSrc = `http://localhost:3000/image/${filePath}`;
     //this.imageName = decodeURIComponent(filePath).split('\\').pop()?.split('/').pop() || '';
     try {
+      const path = decodeURIComponent(filePath);
       // Decode the Base64 string to UTF-8
-      const decodedPath = atob(filePath);
-
+      const decodedPath = atob(path);
       // Extract the file name from the full path
       this.imageName = decodedPath.split('\\').pop()?.split('/').pop() || '';
     } catch (e) {
