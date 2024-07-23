@@ -35,19 +35,22 @@ public class ArtworkAuthenticatorApplication {
       PublicKey publicKey = pair.getPublic();
       PrivateKey privateKey = pair.getPrivate();
 
+      // Base64 MIME encoder for PEM format with 64 character line breaks
+      Base64.Encoder encoder = Base64.getMimeEncoder(64, "\n".getBytes());
+
       try {
         // Save the public key in PEM format
         X509EncodedKeySpec x509EncodedKeySpec = new X509EncodedKeySpec(publicKey.getEncoded());
         String publicKeyPEM = "-----BEGIN PUBLIC KEY-----\n"
-            + Base64.getEncoder().encodeToString(x509EncodedKeySpec.getEncoded())
-            + "\n-----END PUBLIC KEY-----";
+            + new String(encoder.encode(x509EncodedKeySpec.getEncoded()))
+            + "\n-----END PUBLIC KEY-----\n";
         Files.write(Paths.get("public_key.pem"), publicKeyPEM.getBytes(), StandardOpenOption.CREATE);
 
         // Save the private key in PEM format
         PKCS8EncodedKeySpec pkcs8EncodedKeySpec = new PKCS8EncodedKeySpec(privateKey.getEncoded());
         String privateKeyPEM = "-----BEGIN PRIVATE KEY-----\n"
-            + Base64.getEncoder().encodeToString(pkcs8EncodedKeySpec.getEncoded())
-            + "\n-----END PRIVATE KEY-----";
+            + new String(encoder.encode(pkcs8EncodedKeySpec.getEncoded()))
+            + "\n-----END PRIVATE KEY-----\n";
         Files.write(Paths.get("private_key.pem"), privateKeyPEM.getBytes(), StandardOpenOption.CREATE);
       } catch (IOException e) {
         System.out.println("Could not save RSA keys");
