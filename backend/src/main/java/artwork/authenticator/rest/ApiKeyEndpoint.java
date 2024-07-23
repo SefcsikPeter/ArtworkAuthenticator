@@ -54,7 +54,7 @@ public class ApiKeyEndpoint {
   @PostMapping
   public ResponseEntity<String> setApiKey(@RequestBody ApiKeyDto encryptedApiKey) {
     try {
-      LOG.info("Encrypted API key received: " + encryptedApiKey.encryptedApiKey());
+      LOG.info("Encrypted API key received");
       PrivateKey privateKey = this.getPrivateKey();
       this.apiKey = this.decrypt(encryptedApiKey.encryptedApiKey(), privateKey);
       return ResponseEntity.ok("API key set successfully");

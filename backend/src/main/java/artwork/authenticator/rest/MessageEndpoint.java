@@ -31,7 +31,6 @@ public class MessageEndpoint {
   @PostMapping
   public GPTResponseDto create(@RequestBody UserMessageDto userMessage) {
     LOG.trace("create({})", userMessage);
-    LOG.error(userMessage.userMessage());
     try {
       return service.create(userMessage);
     } catch (NotFoundException e) {

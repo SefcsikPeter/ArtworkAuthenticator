@@ -214,8 +214,7 @@ public class ArtworkServiceImpl implements ArtworkService {
           }
         }
       } else {
-        System.err.println("No choices available in the response.");
-        System.err.println(responseBody);
+        LOG.error("No choices available in the response. {}", responseBody);
       }
     } catch (IOException | InterruptedException e) {
       LOG.error("could not get response from gpt-4 vision " + e.getMessage());
@@ -250,8 +249,7 @@ public class ArtworkServiceImpl implements ArtworkService {
       ImageReader reader = iter.next();
       return reader.getFormatName();
     } catch (IOException e) {
-      e.printStackTrace();
-      return null;
+      throw new IOException("Failed to read image type");
     }
   }
 

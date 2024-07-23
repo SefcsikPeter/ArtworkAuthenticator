@@ -158,8 +158,7 @@ public class MessageServiceImpl implements MessageService {
           }
         }
       } else {
-        System.err.println("No choices available in the response.");
-        System.err.println(responseBody);
+        LOG.error("No choices available in the response. {}", responseBody);
       }
     } catch (IOException | InterruptedException e) {
       LOG.error("could not get response from gpt-4 vision " + e.getMessage());
@@ -225,7 +224,7 @@ public class MessageServiceImpl implements MessageService {
     }
   }
 
-  private String getImageType(String filePath) {
+  private String getImageType(String filePath) throws IOException {
     String urlDecodedPath = URLDecoder.decode(filePath, StandardCharsets.UTF_8);
     byte[] decodedBytes = Base64.getDecoder().decode(urlDecodedPath);
     String decodedPath = new String(decodedBytes, StandardCharsets.UTF_8);
@@ -238,8 +237,7 @@ public class MessageServiceImpl implements MessageService {
       ImageReader reader = iter.next();
       return reader.getFormatName();
     } catch (IOException e) {
-      e.printStackTrace();
-      return null;
+      throw new IOException("Failed to read image type");
     }
   }
 
