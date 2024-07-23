@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 
 @RestController
@@ -36,6 +37,10 @@ public class MessageEndpoint {
     } catch (NotFoundException e) {
       HttpStatus status = HttpStatus.NOT_FOUND;
       logClientError(status, "Result with id %d not found".formatted(userMessage.resultId()), e);
+      throw new ResponseStatusException(status, e.getMessage(), e);
+    } catch (IOException e) {
+      HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
+      logClientError(status, "Could not convert image to base 64", e);
       throw new ResponseStatusException(status, e.getMessage(), e);
     }
   }
