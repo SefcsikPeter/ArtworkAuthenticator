@@ -83,7 +83,7 @@ export class ResultPageComponent implements OnInit {
     if (this.result.neuralNetResult) {
       const artistProbabilities = this.result.neuralNetResult.split(',');
       this.top1Artist = this.artists[+artistProbabilities[0]];
-      this.top1ArtistProb = '' + +this.truncateString(artistProbabilities[1], 6)*100;
+      this.top1ArtistProb = this.truncateString('' + +this.truncateString(artistProbabilities[1], 6)*100, 4);;
       console.log(artistProbabilities[1], artistProbabilities[2]);
       this.selectedArtistProb = this.truncateString('' + +this.truncateString(artistProbabilities[2], 6)*100, 4);
     }
