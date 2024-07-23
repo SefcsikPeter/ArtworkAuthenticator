@@ -65,7 +65,7 @@ export class HomeComponent implements OnInit {
   onSubmit(): void {
     console.log('submitted form', this.artworkForm?.value);
     if (this.artworkForm?.value.title) {
-      this.artwork.title = this.artworkForm?.value.title;
+      this.artwork.title = this.sanitizeForJSON(this.artworkForm?.value.title);
     }
     if (this.artworkForm?.value.artist) {
       this.artwork.artist = this.artworkForm?.value.artist;
@@ -77,13 +77,13 @@ export class HomeComponent implements OnInit {
       return;
     }
     if (this.artworkForm?.value.gallery) {
-      this.artwork.gallery = this.artworkForm?.value.gallery;
+      this.artwork.gallery = this.sanitizeForJSON(this.artworkForm?.value.gallery);
     }
     if (this.artworkForm?.value.price) {
-      this.artwork.price = this.artworkForm?.value.price;
+      this.artwork.price = this.sanitizeForJSON(this.artworkForm?.value.price);
     }
     if (this.artworkForm?.value.description) {
-      this.artwork.description = this.artworkForm?.value.description.replace(/\n/g, ' ');
+      this.artwork.description = this.sanitizeForJSON(this.artworkForm?.value.description);
     }
     if (typeof this.imageSrc === 'string') {
       this.artwork.image = this.imageSrc.replace('http://localhost:3000/image/', '');
@@ -115,5 +115,13 @@ export class HomeComponent implements OnInit {
 
   formatName(artist: string): string {
     return artist.replace('_', ' ');
+  }
+
+  sanitizeForJSON(text: string) {
+    return text.replace(/\\/g, '\\\\')
+      .replace(/"/g, '\\"')
+      .replace(/\n/g, '\\n')
+      .replace(/\r/g, '\\r')
+      .replace(/\t/g, '\\t');
   }
 }

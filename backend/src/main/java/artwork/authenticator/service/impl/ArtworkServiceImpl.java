@@ -217,7 +217,7 @@ public class ArtworkServiceImpl implements ArtworkService {
     } catch (IOException | InterruptedException e) {
       LOG.error("could not get response from gpt-4 vision " + e.getMessage());
     }
-    return gptResponse.replace('"', '\'');
+    return sanitizeForJSON(gptResponse);
   }
 
   private String imageFromEncodedPathToBase64(String imagePath) throws IOException {
@@ -250,5 +250,48 @@ public class ArtworkServiceImpl implements ArtworkService {
       e.printStackTrace();
       return null;
     }
+  }
+
+  private String sanitizeForJSON(String input) {
+    if (input == null) {
+      return null;
+    }
+
+    StringBuilder sanitized = new StringBuilder();
+    for (char c : input.toCharArray()) {
+      switch (c) {
+        case '\\':
+          sanitized.append("\\\\");
+          break;
+        case '\"':
+          sanitized.append("\\\"");
+          break;
+        case '\n':
+          sanitized.append("\\n");
+          break;
+        case '\r':
+          sanitized.append("\\r");
+          break;
+        case '\t':
+          sanitized.append("\\t");
+          break;
+        case '\b':
+          sanitized.append("\\b");
+          break;
+        case '\f':
+          sanitized.append("\\f");
+          break;
+        default:
+          // Handle Unicode control characters (U+0000 to U+001F)
+          if (c >= 0x0000 && c <= 0x001F) {
+            sanitized.append(String.format("\\u%04x", (int) c));
+          } else {
+            sanitized.append(c);
+          }
+          break;
+      }
+    }
+
+    return sanitized.toString();
   }
 }

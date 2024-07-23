@@ -113,7 +113,7 @@ export class ResultPageComponent implements OnInit {
   sendFeedback() {
     if (this.feedback?.value.text) {
       console.log(this.messagePairs);
-      const userMessage: UserMessage = {resultId: this.resultId, userMessage: this.feedback.value.text};
+      const userMessage: UserMessage = {resultId: this.resultId, userMessage: this.sanitizeForJSON(this.feedback.value.text)};
       this.messageService.create(userMessage).subscribe({
         next: response => {
           const messagePair: MessageList = {userMessage: this.feedback?.value.text, gptResponse: response.response};
@@ -128,5 +128,13 @@ export class ResultPageComponent implements OnInit {
         }
       });
     }
+  }
+
+  sanitizeForJSON(text: string) {
+    return text.replace(/\\/g, '\\\\')
+      .replace(/"/g, '\\"')
+      .replace(/\n/g, '\\n')
+      .replace(/\r/g, '\\r')
+      .replace(/\t/g, '\\t');
   }
 }
