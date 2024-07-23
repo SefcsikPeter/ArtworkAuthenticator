@@ -21,6 +21,4 @@ public interface ArtworkService {
   ArtworkDetailDto getById(Long id) throws NotFoundException;
 
   Map<Long, ArtworkDetailDto> getAllById(Collection<Long> ids) throws NotFoundException;
-
-  void setApiKey(String decryptedApiKey);
 }

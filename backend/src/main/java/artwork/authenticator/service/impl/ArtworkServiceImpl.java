@@ -8,6 +8,7 @@ import artwork.authenticator.exception.NotFoundException;
 import artwork.authenticator.mapper.ArtworkMapper;
 import artwork.authenticator.persistence.ArtworkDao;
 import artwork.authenticator.persistence.ArtworkResultDao;
+import artwork.authenticator.rest.ApiKeyEndpoint;
 import artwork.authenticator.service.ArtworkService;
 import artwork.authenticator.type.Artist;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -26,6 +27,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.invoke.MethodHandles;
 import java.net.URI;
+import java.net.URLDecoder;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
@@ -45,7 +47,6 @@ public class ArtworkServiceImpl implements ArtworkService {
   private final ArtworkDao artworkDao;
   private final ArtworkResultDao artworkResultDao;
   private final ArtworkMapper artworkMapper;
-  private String apiKey;
 
   public ArtworkServiceImpl(
       ArtworkDao artworkDao,
@@ -68,7 +69,8 @@ public class ArtworkServiceImpl implements ArtworkService {
       base64Image = "data:image/jpeg;base64," + base64Image;
     }
     Long artworkId = analysedArtwork.getId();
-    String neuralNetResult = runPythonScript(artwork.image(), Artist.getArtistIndex(artwork.artist()));
+    //String neuralNetResult = runPythonScript(artwork.image(), Artist.getArtistIndex(artwork.artist()));
+    String neuralNetResult = "";
     String gptResult = imageAnalysisRequestToGPT4(base64Image, artwork);
 
     ArtworkResultDto resultDto = new ArtworkResultDto(artworkId, neuralNetResult, gptResult);
@@ -188,7 +190,7 @@ public class ArtworkServiceImpl implements ArtworkService {
       HttpRequest request = HttpRequest.newBuilder()
           .uri(URI.create("https://api.openai.com/v1/chat/completions"))
           .header("Content-Type", "application/json")
-          .header("Authorization", "Bearer " + apiKey)
+          .header("Authorization", "Bearer " + ApiKeyEndpoint.getApiKey())
           .POST(HttpRequest.BodyPublishers.ofString(jsonPayload))
           .build();
 
@@ -218,15 +220,10 @@ public class ArtworkServiceImpl implements ArtworkService {
     return gptResponse.replace('"', '\'');
   }
 
-  public void setApiKey(String apiKey) {
-    this.apiKey = apiKey;
-  }
-
   private String imageFromEncodedPathToBase64(String imagePath) throws IOException {
-    System.out.println(imagePath);
-    byte[] decodedBytes = Base64.getDecoder().decode(imagePath);
+    String urlDecodedPath = URLDecoder.decode(imagePath, StandardCharsets.UTF_8);
+    byte[] decodedBytes = Base64.getDecoder().decode(urlDecodedPath);
     String decodedPath = new String(decodedBytes, StandardCharsets.UTF_8);
-    System.out.println(decodedPath);
     File file = new File(decodedPath);
     byte[] fileContent = new byte[(int) file.length()];
     try (FileInputStream fileInputStream = new FileInputStream(file)) {
@@ -238,7 +235,8 @@ public class ArtworkServiceImpl implements ArtworkService {
   }
 
   private String getImageType(String filePath) throws IOException {
-    byte[] decodedBytes = Base64.getDecoder().decode(filePath);
+    String urlDecodedPath = URLDecoder.decode(filePath, StandardCharsets.UTF_8);
+    byte[] decodedBytes = Base64.getDecoder().decode(urlDecodedPath);
     String decodedPath = new String(decodedBytes, StandardCharsets.UTF_8);
     File file = new File(decodedPath);
     try (ImageInputStream iis = ImageIO.createImageInputStream(file)) {

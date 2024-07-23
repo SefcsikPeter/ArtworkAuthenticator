@@ -36,6 +36,8 @@ public class ApiKeyEndpoint {
   static final String BASE_PATH = "/apikey";
   private final ArtworkService artworkService;
 
+  private static String apiKey = "";
+
   public ApiKeyEndpoint(ArtworkService artworkService){this.artworkService = artworkService;}
 
   @GetMapping
@@ -54,13 +56,16 @@ public class ApiKeyEndpoint {
     try {
       LOG.info("Encrypted API key received: " + encryptedApiKey.encryptedApiKey());
       PrivateKey privateKey = this.getPrivateKey();
-      String decryptedApiKey = this.decrypt(encryptedApiKey.encryptedApiKey(), privateKey);
-      artworkService.setApiKey(decryptedApiKey);
+      this.apiKey = this.decrypt(encryptedApiKey.encryptedApiKey(), privateKey);
       return ResponseEntity.ok("API key set successfully");
     } catch (Exception e) {
       LOG.error("Failed to set API key", e);
       return ResponseEntity.status(500).body("Failed to set API key");
     }
+  }
+
+  public static String getApiKey() {
+    return apiKey;
   }
 
   private PrivateKey getPrivateKey() throws Exception {
