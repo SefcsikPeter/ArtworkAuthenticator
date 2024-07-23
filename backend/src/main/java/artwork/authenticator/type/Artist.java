@@ -33,6 +33,6 @@ public enum Artist {
         return i;
       }
     }
-    return -1; // Return -1 if the artist is not found (optional)
+    return -1;
   }
 }

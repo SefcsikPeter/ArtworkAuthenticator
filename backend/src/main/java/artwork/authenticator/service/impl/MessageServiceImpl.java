@@ -123,7 +123,7 @@ public class MessageServiceImpl implements MessageService {
           artwork.getGallery(),
           artwork.getPrice(),
           artwork.getDescription(),
-          image, // TODO: change to loading image from path
+          image,
           result.getGptResult().replace('\n', ' '));
       if (!messages.isEmpty()) {
         for (Message message : messages) {
