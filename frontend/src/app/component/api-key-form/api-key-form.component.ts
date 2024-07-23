@@ -35,23 +35,24 @@ export class ApiKeyFormComponent implements OnInit {
               this.apiKeyService.sendApiKey(this.apiKey).subscribe(
                 {
                   next: () => {
-                    this.validationResult = isValid;
                     this.submitted = true;
+                    this.validationResult = isValid;
                     console.log('Encrypted API key sent to backend');
                   },
                   error: err => {
+                    this.submitted = true;
                     if (err.status === 200) {
                       this.validationResult = isValid;
-                      this.submitted = true;
                       console.log('Encrypted API key sent to backend');
                       return;
                     }
                     this.validationResult = false;
-                    this.submitted = true;
                     console.log('Failed to send API key to backend', err);
                   }
                 }
               );
+            } else {
+              this.validationResult = false;
             }
           },
           error: error => {
