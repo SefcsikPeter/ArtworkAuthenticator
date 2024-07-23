@@ -26,8 +26,6 @@ device = torch.device('cpu')
 densenet = densenet.to(device)
 
 # Load fine-tuned model
-# TODO change path
-#checkpoint_path = 'C:/Users/ptsef/OneDrive/Desktop/BSC/UserInterface/template-java/backend/src/main/java/artwork/authenticator/python/model_epoch_35.pth'
 checkpoint_path = os.getcwd() + '/resources/backend/python/model_epoch_35.pth'
 checkpoint = torch.load(checkpoint_path, map_location=torch.device('cpu'))
 densenet.load_state_dict(checkpoint['state_dict'])

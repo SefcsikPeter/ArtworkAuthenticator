@@ -69,8 +69,7 @@ public class ArtworkServiceImpl implements ArtworkService {
       base64Image = "data:image/jpeg;base64," + base64Image;
     }
     Long artworkId = analysedArtwork.getId();
-    //String neuralNetResult = runPythonScript(artwork.image(), Artist.getArtistIndex(artwork.artist()));
-    String neuralNetResult = "";
+    String neuralNetResult = runPythonScript(artwork.image(), Artist.getArtistIndex(artwork.artist()));
     String gptResult = imageAnalysisRequestToGPT4(base64Image, artwork);
 
     ArtworkResultDto resultDto = new ArtworkResultDto(artworkId, neuralNetResult, gptResult);
@@ -102,22 +101,11 @@ public class ArtworkServiceImpl implements ArtworkService {
   }
 
   private String runPythonScript(String image, int artistIndex) throws IOException{
-    // TODO remove
-    boolean testmode = false;
     String output = "";
-    //TODO: change these paths if on different computer or trying to execute with different env
-    String pythonScriptPath = "";
-    String condaEnvPath = "";
-    if (testmode) {
-      pythonScriptPath = "C:\\Users\\ptsef\\OneDrive\\Desktop\\BSC\\UserInterface\\template-java\\backend\\src\\main\\java\\artwork\\authenticator\\python\\authenticator.py";
-      condaEnvPath = "..\\conda-env\\auth-env";
-    } else {
-      String workingDirectory = System.getProperty("user.dir");
-      pythonScriptPath = workingDirectory + "\\resources\\backend\\python\\authenticator.py";
-      condaEnvPath = workingDirectory + "\\resources\\conda-env\\auth-env";
-    }
+    String workingDirectory = System.getProperty("user.dir");
+    String pythonScriptPath = workingDirectory + "\\resources\\backend\\python\\authenticator.py";
+    String condaEnvPath = workingDirectory + "\\resources\\conda-env\\auth-env";
 
-    String condaActivateScript = "conda activate " + condaEnvPath;
     String pythonExecutable = condaEnvPath + "\\python";
 
     String urlDecodedPath = URLDecoder.decode(image, StandardCharsets.UTF_8);
