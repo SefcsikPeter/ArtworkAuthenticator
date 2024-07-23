@@ -44,14 +44,16 @@ public class ArtworkAuthenticatorApplication {
         String publicKeyPEM = "-----BEGIN PUBLIC KEY-----\n"
             + new String(encoder.encode(x509EncodedKeySpec.getEncoded()))
             + "\n-----END PUBLIC KEY-----\n";
-        Files.write(Paths.get("public_key.pem"), publicKeyPEM.getBytes(), StandardOpenOption.CREATE);
+        Files.write(Paths.get("public_key.pem"), publicKeyPEM.getBytes(),
+            StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
 
         // Save the private key in PEM format
         PKCS8EncodedKeySpec pkcs8EncodedKeySpec = new PKCS8EncodedKeySpec(privateKey.getEncoded());
         String privateKeyPEM = "-----BEGIN PRIVATE KEY-----\n"
             + new String(encoder.encode(pkcs8EncodedKeySpec.getEncoded()))
             + "\n-----END PRIVATE KEY-----\n";
-        Files.write(Paths.get("private_key.pem"), privateKeyPEM.getBytes(), StandardOpenOption.CREATE);
+        Files.write(Paths.get("private_key.pem"), privateKeyPEM.getBytes(),
+            StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
       } catch (IOException e) {
         System.out.println("Could not save RSA keys");
       }
@@ -61,5 +63,4 @@ public class ArtworkAuthenticatorApplication {
       System.out.println("KeyPairGenerator not available");
     }
   }
-
 }
