@@ -120,7 +120,10 @@ public class ArtworkServiceImpl implements ArtworkService {
     String condaActivateScript = "conda activate " + condaEnvPath;
     String pythonExecutable = condaEnvPath + "\\python";
 
-    String imagePath = image.replaceFirst("^file://", "");
+    String urlDecodedPath = URLDecoder.decode(image, StandardCharsets.UTF_8);
+    byte[] decodedBytes = Base64.getDecoder().decode(urlDecodedPath);
+    String imagePath = new String(decodedBytes, StandardCharsets.UTF_8);
+
     imagePath = "\"" + imagePath + "\""; // Ensures the path is correctly quoted
 
     List<String> commands = new ArrayList<>();
