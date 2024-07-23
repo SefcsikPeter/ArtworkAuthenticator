@@ -46,15 +46,14 @@ export class HomeComponent implements OnInit {
   }
 
   processSelectedFile(filePath: string) {
-    this.isImageSelected = true;
-    this.imageSrc = `http://localhost:3000/image/${filePath}`;
-    //this.imageName = decodeURIComponent(filePath).split('\\').pop()?.split('/').pop() || '';
     try {
       const path = decodeURIComponent(filePath);
       // Decode the Base64 string to UTF-8
       const decodedPath = atob(path);
       // Extract the file name from the full path
       this.imageName = decodedPath.split('\\').pop()?.split('/').pop() || '';
+      this.isImageSelected = true;
+      this.imageSrc = `http://localhost:3000/image/${filePath}`;
     } catch (e) {
       console.error('Failed to decode file path', e);
       this.imageName = 'Invalid file';
@@ -88,6 +87,12 @@ export class HomeComponent implements OnInit {
     }
     if (typeof this.imageSrc === 'string') {
       this.artwork.image = this.imageSrc.replace('http://localhost:3000/image/', '');
+    } else {
+      this.notification.success('', 'Please select an image!', {
+        toastClass: 'user-info',
+        positionClass: 'custom-toast-center'
+      });
+      return;
     }
     this.notification.success('', 'The entered information has been submitted, please wait for the results', {
       toastClass: 'user-info',
